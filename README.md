@@ -7,4 +7,4 @@ Proof of concept API surface for writing Modules for the react-sdk
 * [ ] Proof of concept
 * [ ] If approved, make it a real npm package
 * [ ] If approved, fix access controls
-* [ ] If approved, maintain thiss
+* [ ] If approved, maintain this
