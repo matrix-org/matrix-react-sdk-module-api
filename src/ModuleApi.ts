@@ -15,6 +15,9 @@ limitations under the License.
 */
 
 import { TranslationStringsObject } from "./types/translations";
+import { DialogProps } from "./components/DialogContent";
+import { AccountCredentials } from "./types/credentials";
+import React from "react";
 
 export interface ModuleApi {
     /**
@@ -32,4 +35,39 @@ export interface ModuleApi {
      * @returns The translated string.
      */
     translateString(s: string, variables?: Record<string, unknown>): string;
+
+    /**
+     * Opens a dialog in the client.
+     * @param title The title of the dialog
+     * @param body The function which creates a body component for the dialog.
+     * @returns Whether the user submitted the dialog or closed it, and the model returned by the
+     * dialog component if submitted.
+     */
+    // TODO: @@ Support input props to DialogContent
+    openDialog<M extends object, P extends DialogProps = DialogProps, C extends React.Component = React.Component>(title: string, body: (props: P, ref: React.RefObject<C>) => React.ReactNode): Promise<{ didSubmit: boolean, model: M }>;
+
+    /**
+     * Registers for an account on the currently connected homeserver.
+     * @param username The username to register.
+     * @param password The password to register.
+     * @param displayName Optional display name to set.
+     * @returns Resolves to the credentials for the created account.
+     */
+    registerAccount(username: string, password: string, displayName?: string): Promise<AccountCredentials>;
+
+    /**
+     * Switches the user's currently logged-in account to the one specified. The user will not
+     * be warned.
+     * @param credentials The credentials to log in with.
+     * @returns Resolves when complete.
+     */
+    useAccount(credentials: AccountCredentials): Promise<void>;
+
+    /**
+     * Switches the user's current view to look at the given room, joining it if required.
+     * @param roomId The room ID to look at.
+     * @param andJoin True to also join the room if needed.
+     * @returns Resolves when complete.
+     */
+    switchToRoom(roomId: string, andJoin?: boolean): Promise<void>;
 }
