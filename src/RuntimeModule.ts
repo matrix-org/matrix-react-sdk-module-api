@@ -19,6 +19,7 @@ import { EventEmitter } from "events";
 import { ModuleApi } from "./ModuleApi";
 
 // TODO: Type the event emitter with AnyLifecycle (extract TypedEventEmitter from js-sdk somehow?)
+// See https://github.com/matrix-org/matrix-react-sdk-module-api/issues/4
 
 /**
  * Represents a module which is loaded at runtime. Modules which implement this class
