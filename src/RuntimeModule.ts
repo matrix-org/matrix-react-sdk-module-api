@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import { EventEmitter } from "events";
+
 import { ModuleApi } from "./ModuleApi";
 
 // TODO: Type the event emitter with AnyLifecycle (extract TypedEventEmitter from js-sdk somehow?)

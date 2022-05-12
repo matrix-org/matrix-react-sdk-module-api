@@ -14,10 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import React from "react";
+
 import { TranslationStringsObject } from "./types/translations";
 import { DialogProps } from "./components/DialogContent";
 import { AccountCredentials } from "./types/credentials";
-import React from "react";
 
 /**
  * A module API surface for the react-sdk. Provides a stable API for modules to
