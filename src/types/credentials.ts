@@ -14,9 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/**
+ * Matrix account credentials for a known user.
+ */
 export interface AccountCredentials {
+    /**
+     * The user ID.
+     */
     userId: string;
+    /**
+     * The device ID.
+     */
     deviceId: string;
+    /**
+     * The access token belonging to this device ID and user ID.
+     */
     accessToken: string;
+    /**
+     * The homeserver URL where the credentials are valid.
+     */
     homeserverUrl: string;
 }

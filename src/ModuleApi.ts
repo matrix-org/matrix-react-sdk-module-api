@@ -19,6 +19,13 @@ import { DialogProps } from "./components/DialogContent";
 import { AccountCredentials } from "./types/credentials";
 import React from "react";
 
+/**
+ * A module API surface for the react-sdk. Provides a stable API for modules to
+ * interact with the internals of the react-sdk without having to update themselves
+ * for refactorings or code changes within the react-sdk.
+ *
+ * An instance of a ModuleApi is provided to all modules at runtime.
+ */
 export interface ModuleApi {
     /**
      * Register strings with the translation engine. This supports overriding strings which
@@ -40,14 +47,21 @@ export interface ModuleApi {
      * Opens a dialog in the client.
      * @param title The title of the dialog
      * @param body The function which creates a body component for the dialog.
+     * @param props Optional props to provide to the dialog.
      * @returns Whether the user submitted the dialog or closed it, and the model returned by the
      * dialog component if submitted.
      */
-    // TODO: @@ Support input props to DialogContent
-    openDialog<M extends object, P extends DialogProps = DialogProps, C extends React.Component = React.Component>(title: string, body: (props: P, ref: React.RefObject<C>) => React.ReactNode): Promise<{ didSubmit: boolean, model: M }>;
+    openDialog<M extends object, P extends DialogProps = DialogProps, C extends React.Component = React.Component>(
+        title: string,
+        body: (props: P, ref: React.RefObject<C>) => React.ReactNode,
+        props?: Omit<P, keyof DialogProps>,
+    ): Promise<{ didSubmit: boolean, model: M }>;
 
     /**
-     * Registers for an account on the currently connected homeserver.
+     * Registers for an account on the currently connected homeserver. This requires that the homeserver
+     * offer a password-only flow without other flows. This means it is not traditionally compatible with
+     * homeservers like matrix.org which also generally require a combination of reCAPTCHA, email address,
+     * terms of service acceptance, etc.
      * @param username The username to register.
      * @param password The password to register.
      * @param displayName Optional display name to set.
