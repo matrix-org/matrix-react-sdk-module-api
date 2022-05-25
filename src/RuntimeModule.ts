@@ -17,6 +17,7 @@ limitations under the License.
 import { EventEmitter } from "events";
 
 import { ModuleApi } from "./ModuleApi";
+import { PlainSubstitution } from "./types/translations";
 
 // TODO: Type the event emitter with AnyLifecycle (extract TypedEventEmitter from js-sdk somehow?)
 // See https://github.com/matrix-org/matrix-react-sdk-module-api/issues/4
@@ -37,7 +38,7 @@ export abstract class RuntimeModule extends EventEmitter {
      * @returns The translated string.
      * @protected
      */
-    protected t(s: string, variables?: Record<string, unknown>): string {
+    protected t(s: string, variables?: Record<string, PlainSubstitution>): string {
         return this.moduleApi.translateString(s, variables);
     }
 }

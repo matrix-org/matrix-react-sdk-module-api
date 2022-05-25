@@ -24,3 +24,8 @@ export type TranslationStringsObject = {
         [lang: string]: string;
     };
 };
+
+/**
+ * Represents a simple translation replacement (non-component replacement)
+ */
+export type PlainSubstitution = number | string;

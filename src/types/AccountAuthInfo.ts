@@ -15,9 +15,9 @@ limitations under the License.
 */
 
 /**
- * Matrix account credentials for a known user.
+ * Matrix account authentication information for a known user.
  */
-export interface AccountCredentials {
+export interface AccountAuthInfo {
     /**
      * The user ID.
      */

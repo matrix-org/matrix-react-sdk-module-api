@@ -16,9 +16,9 @@ limitations under the License.
 
 import React from "react";
 
-import { TranslationStringsObject } from "./types/translations";
+import { PlainSubstitution, TranslationStringsObject } from "./types/translations";
 import { DialogProps } from "./components/DialogContent";
-import { AccountCredentials } from "./types/credentials";
+import { AccountAuthInfo } from "./types/AccountAuthInfo";
 
 /**
  * A module API surface for the react-sdk. Provides a stable API for modules to
@@ -42,7 +42,7 @@ export interface ModuleApi {
      * @param variables The variables to replace, if any.
      * @returns The translated string.
      */
-    translateString(s: string, variables?: Record<string, unknown>): string;
+    translateString(s: string, variables?: Record<string, PlainSubstitution>): string;
 
     /**
      * Opens a dialog in the client.
@@ -56,7 +56,7 @@ export interface ModuleApi {
         title: string,
         body: (props: P, ref: React.RefObject<C>) => React.ReactNode,
         props?: Omit<P, keyof DialogProps>,
-    ): Promise<{ didSubmit: boolean, model: M }>;
+    ): Promise<{ didOkOrSubmit: boolean, model: M }>;
 
     /**
      * Registers for an account on the currently connected homeserver. This requires that the homeserver
@@ -66,23 +66,27 @@ export interface ModuleApi {
      * @param username The username to register.
      * @param password The password to register.
      * @param displayName Optional display name to set.
-     * @returns Resolves to the credentials for the created account.
+     * @returns Resolves to the authentication info for the created account.
      */
-    registerAccount(username: string, password: string, displayName?: string): Promise<AccountCredentials>;
+    registerSimpleAccount(username: string, password: string, displayName?: string): Promise<AccountAuthInfo>;
 
     /**
      * Switches the user's currently logged-in account to the one specified. The user will not
      * be warned.
-     * @param credentials The credentials to log in with.
+     * @param accountAuthInfo The authentication info to log in with.
      * @returns Resolves when complete.
      */
-    useAccount(credentials: AccountCredentials): Promise<void>;
+    overwriteAccountAuth(accountAuthInfo: AccountAuthInfo): Promise<void>;
 
     /**
-     * Switches the user's current view to look at the given room, joining it if required.
-     * @param roomId The room ID to look at.
-     * @param andJoin True to also join the room if needed.
+     * Switches the user's current view to look at the given permalink. If the permalink is
+     * a room, it can optionally be joined automatically if required.
+     *
+     * Permalink must be a matrix.to permalink at this time.
+     * @param uri The URI to navigate to.
+     * @param andJoin True to also join the room if needed. Does nothing if the link isn't to
+     * a room.
      * @returns Resolves when complete.
      */
-    switchToRoom(roomId: string, andJoin?: boolean): Promise<void>;
+    navigatePermalink(uri: string, andJoin?: boolean): Promise<void>;
 }

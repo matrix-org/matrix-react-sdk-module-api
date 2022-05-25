@@ -16,6 +16,7 @@ limitations under the License.
 
 import * as React from "react";
 import { ModuleApi } from "../ModuleApi";
+import { PlainSubstitution } from "../types/translations";
 
 export interface DialogProps {
     moduleApi: ModuleApi;
@@ -45,7 +46,7 @@ export abstract class DialogContent<P extends DialogProps = DialogProps, S exten
      * @returns The translated string.
      * @protected
      */
-    protected t(s: string, variables?: Record<string, unknown>): string {
+    protected t(s: string, variables?: Record<string, PlainSubstitution>): string {
         return this.props.moduleApi.translateString(s, variables);
     }
 
