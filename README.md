@@ -83,10 +83,10 @@ be subpar.
 
 ### Account management
 
-Modules can register for an account without overriding the logged-in user's credentials with the `registerAccount()`
-function on a `ModuleApi` instance. If the module would like to use those credentials, or has a different set of
-credentials in mind, it can call `useAccount()` on a `ModuleApi` instance to overwrite (**without warning**) the current
-user's credentials.
+Modules can register for an account without overriding the logged-in user's auth data with the `registerSimpleAccount()`
+function on a `ModuleApi` instance. If the module would like to use that auth data, or has a different set of
+authentication information in mind, it can call `overwriteAccountAuth()` on a `ModuleApi` instance to overwrite 
+(**without warning**) the current user's session.
 
 ### View management
 
@@ -95,8 +95,8 @@ a small bit of the UI behaviour. For example, listening for `RoomViewLifecycle.P
 to change the behaviour of the "room preview bar" to enable future cases of `RoomViewLifecycle.JoinFromRoomPreview`
 being raised for additional handling.
 
-The module can also change which room the user is looking at, and join it, with `switchToRoom()` on a `ModuleApi`
-instance.
+The module can also change what room/user/entity the user is looking at, and join it (if it's a room), with 
+`navigatePermalink` on a `ModuleApi` instance.
 
 ## Contributing / developing
 
