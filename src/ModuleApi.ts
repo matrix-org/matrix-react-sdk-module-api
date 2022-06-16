@@ -89,4 +89,31 @@ export interface ModuleApi {
      * @returns Resolves when complete.
      */
     navigatePermalink(uri: string, andJoin?: boolean): Promise<void>;
+
+    /**
+     * Gets a value verbatim from the config. The returned value will be of the type specified
+     * by the user - it is not verified against a schema.
+     *
+     * The caller should provide a namespace which it owns to retrieve settings from. During
+     * read, the `key` will be treated as a sub-key of the namespace on the overall configuration
+     * object. For example:
+     *
+     * ```json
+     * {
+     *     "inaccessible_root_level_config": "hello world",
+     *     "org.example.my_module_namespace": {
+     *         "my_key": 42
+     *     }
+     * }
+     * ```
+     *
+     * The caller would use `getConfigValue<number>("org.example.my_module_namespace", "my_key")`
+     * to get the targeted config value.
+     *
+     * There is no root namespace, thus root-level config values cannot be read.
+     * @param namespace The module's namespace.
+     * @param key The key to look up.
+     * @returns The config value verbatim.
+     */
+    getConfigValue<T>(namespace: string, key: string): T;
 }
