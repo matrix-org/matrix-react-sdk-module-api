@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 import { EventEmitter } from "events";
+import { Capability, Widget } from "matrix-widget-api";
 
 import { ModuleApi } from "./ModuleApi";
 import { PlainSubstitution } from "./types/translations";
@@ -40,5 +41,66 @@ export abstract class RuntimeModule extends EventEmitter {
      */
     protected t(s: string, variables?: Record<string, PlainSubstitution>): string {
         return this.moduleApi.translateString(s, variables);
+    }
+
+    /**
+     * Gets widget permissions behaviour to preapprove permissions.
+     * @returns instance of IWidgetPermissions with custom behaviour or undefined for default
+     */
+    public getWidgetPermissions(): WidgetPermissions | undefined {
+        return undefined;
+    }
+}
+
+/**
+ * Represents widget permissions behaviour to preapprove permissions that can be customized by module.
+ */
+export interface WidgetPermissions {
+    /**
+     * Approves the widget embedding.
+     * This will be used to embed certain widgets without prompting the user.
+     * @param {Widget} widget The widget to approve embedding for.
+     * @returns {boolean} true if embedding is preapproved, false otherwise
+     */
+    isEmbeddingPreapproved(widget: Widget): boolean;
+
+    /**
+     * Approves the widget for identity token.
+     * This will be used to give certain widgets an identity token without having to
+     * prompt the user to approve it.
+     * @param {Widget} widget The widget to approve identity request for.
+     * @returns {boolean} Resolves to true if identity request is preapproved, false otherwise
+     */
+    isIdentityRequestPreapproved(widget: Widget): Promise<boolean>;
+
+    /**
+     * Approves the widget for capabilities that it requested, if any can be
+     * approved. Typically this will be used to give certain widgets capabilities
+     * without having to prompt the user to approve them. This cannot reject
+     * capabilities that Element will be automatically granting, such as the
+     * ability for Jitsi widgets to stay on screen - those will be approved
+     * regardless.
+     * @param {Widget} widget The widget to approve capabilities for.
+     * @param {Set<Capability>} requestedCapabilities The capabilities the widget requested.
+     * @returns {Set<Capability>} Resolves to the capabilities that are approved for use
+     * by the widget. If none are approved, this should return an empty Set.
+     */
+    preapproveCapabilities(widget: Widget, requestedCapabilities: Set<Capability>): Promise<Set<Capability>>;
+}
+
+/**
+ * Defines a default widget permissions behaviour. Can be extended to customize.
+ */
+export class DefaultWidgetPermissions implements WidgetPermissions {
+    isEmbeddingPreapproved(widget: Widget): boolean {
+        return false;
+    }
+
+    async isIdentityRequestPreapproved(widget: Widget): Promise<boolean> {
+        return false;
+    }
+
+    async preapproveCapabilities(widget: Widget, requestedCapabilities: Set<Capability>): Promise<Set<Capability>> {
+        return new Set();
     }
 }
