@@ -46,7 +46,7 @@ export type ApprovalListener = (
 /**
  * Represents the widget
  */
-interface WidgetInfo {
+export interface WidgetInfo {
     /**
      * The user ID who created the widget.
      */
