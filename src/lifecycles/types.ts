@@ -16,8 +16,10 @@ limitations under the License.
 
 import { RoomViewLifecycle } from "./RoomViewLifecycle";
 import { WidgetLifecycle } from "./WidgetLifecycle";
+import { UiComponentLifecycle } from "./UiComponentLifecycle";
 
 export type AnyLifecycle =
     | RoomViewLifecycle
     | WidgetLifecycle
+    | UiComponentLifecycle
     ;
