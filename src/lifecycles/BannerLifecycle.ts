@@ -20,7 +20,7 @@ limitations under the License.
  */
 export enum BannerLifecycle {
     /**
-     * An event to request the banner.
+     * An event to request the banner. It is sent by Element to get the banner provided by the module if any.
      */
     Banner = "banner",
 }
