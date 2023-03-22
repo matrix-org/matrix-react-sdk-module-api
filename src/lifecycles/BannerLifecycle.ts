@@ -1,5 +1,6 @@
 /*
-Copyright 2022 The Matrix.org Foundation C.I.C.
+Copyright 2023 Mikhail Aheichyk
+Copyright 2023 Nordeck IT + Consulting GmbH.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,12 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { RoomViewLifecycle } from "./RoomViewLifecycle";
-import { WidgetLifecycle } from "./WidgetLifecycle";
-import { BannerLifecycle } from "./BannerLifecycle";
+export enum BannerLifecycle {
+    Banner = "banner",
+}
 
-export type AnyLifecycle =
-    | RoomViewLifecycle
-    | WidgetLifecycle
-    | BannerLifecycle
-    ;
+export type BannerOpts = {
+    banner: JSX.Element | undefined;
+};
+
+export type BannerListener = (opts: BannerOpts) => void;
