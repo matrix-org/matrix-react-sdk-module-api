@@ -98,6 +98,10 @@ being raised for additional handling.
 The module can also change what room/user/entity the user is looking at, and join it (if it's a room), with 
 `navigatePermalink` on a `ModuleApi` instance.
 
+### Banner management
+From the `RuntimeModule` instance, modules can listen for `BannerLifecycle.Banner` to provide a banner. It will be 
+shown at the top of the Element.
+
 ## Contributing / developing
 
 Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for the mechanics of the contribution process.
