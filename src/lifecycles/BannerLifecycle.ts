@@ -15,12 +15,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/**
+ * Banner lifecycle events.
+ */
 export enum BannerLifecycle {
+    /**
+     * An event to request the banner.
+     */
     Banner = "banner",
 }
 
+/**
+ * Opts object that is populated with the banner.
+ */
 export type BannerOpts = {
+    /**
+     * A banner to be shown at the top of Element. If not defined, then no change to the Element.
+     */
     banner: JSX.Element | undefined;
 };
 
+/**
+ * Helper type that documents how to implement a banner listener.
+ */
 export type BannerListener = (opts: BannerOpts) => void;
