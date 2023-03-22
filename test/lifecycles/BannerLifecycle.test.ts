@@ -44,6 +44,6 @@ describe("BannerLifecycle", () => {
         const opts: BannerOpts = {banner: undefined};
         module.emit(BannerLifecycle.Banner, opts);
 
-        expect(opts.banner).toEqual(customBanner);
+        expect(opts.banner).toBe(customBanner);
     });
 });
