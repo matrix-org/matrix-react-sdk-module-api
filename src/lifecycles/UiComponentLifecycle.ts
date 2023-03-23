@@ -15,11 +15,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/**
+ * UI Component lifecycle events.
+ */
 export enum UiComponentLifecycle {
+    /**
+     * An event to check if component should be shown by the Element.
+     */
     ShouldShowComponent = "should_show_component"
 }
 
+/**
+ * Opts object containing the result of whether the component should be shown or not.
+ */
 export type ShouldShowUiComponentOps = {
+    /**
+     * Should be true to show the component, false to hide it. If not defined, then the default value from
+     * the Element should be applied.
+     */
     shouldShowComponent: boolean | undefined;
 };
 
