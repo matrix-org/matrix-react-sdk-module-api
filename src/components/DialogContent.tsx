@@ -20,6 +20,12 @@ import { PlainSubstitution } from "../types/translations";
 
 export interface DialogProps {
     moduleApi: ModuleApi;
+
+    /**
+     * Sets submit button as enabled or disabled on the dialog popup.
+     * @param canSubmit
+     */
+    setCanSubmit(canSubmit: boolean): void;
 }
 
 export interface DialogState {
