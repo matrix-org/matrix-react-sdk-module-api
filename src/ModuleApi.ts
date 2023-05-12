@@ -92,7 +92,8 @@ export interface ModuleApi {
 
     /**
      * Gets a value verbatim from the config. The returned value will be of the type specified
-     * by the user - it is not verified against a schema.
+     * by the user - it is not verified against a schema. If the value does not exist in the
+     * config then this will return undefined;
      *
      * The caller should provide a namespace which it owns to retrieve settings from. During
      * read, the `key` will be treated as a sub-key of the namespace on the overall configuration
@@ -115,5 +116,5 @@ export interface ModuleApi {
      * @param key The key to look up.
      * @returns The config value verbatim.
      */
-    getConfigValue<T>(namespace: string, key: string): T;
+    getConfigValue<T>(namespace: string, key: string): T | undefined;
 }
