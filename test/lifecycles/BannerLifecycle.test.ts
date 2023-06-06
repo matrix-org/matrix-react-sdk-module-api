@@ -29,7 +29,7 @@ describe("BannerLifecycle", () => {
     beforeAll(() => {
         module = new class extends RuntimeModule {
             constructor() {
-                super(undefined);
+                super(undefined as any);
 
                 this.on(BannerLifecycle.Banner, this.bannerListener);
             }
