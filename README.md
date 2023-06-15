@@ -99,6 +99,7 @@ The module can also change what room/user/entity the user is looking at, and joi
 `navigatePermalink` on a `ModuleApi` instance.
 
 ### UI Component management
+
 From the `RuntimeModule` instance, modules can listen to `UiComponentLifecycle.ShouldShowComponent` that allows to
 control if some components should be shown or not.
 
