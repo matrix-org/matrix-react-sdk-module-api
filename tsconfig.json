@@ -5,10 +5,10 @@
     "esModuleInterop": true,
     "module": "commonjs",
     "moduleResolution": "node",
-    "noImplicitAny": true,
     "declaration": false,
     "noEmit": true,
-    "jsx": "react"
+    "jsx": "react",
+    "strict": true
   },
   "include": [
     "./src/**/*.ts",
