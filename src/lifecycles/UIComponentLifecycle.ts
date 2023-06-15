@@ -18,7 +18,7 @@ limitations under the License.
 /**
  * UI Component lifecycle events.
  */
-export enum UiComponentLifecycle {
+export enum UIComponentLifecycle {
     /**
      * An event to check if component should be shown by the Element.
      */
@@ -28,7 +28,7 @@ export enum UiComponentLifecycle {
 /**
  * Opts object containing the result of whether the component should be shown or not.
  */
-export type ShouldShowUiComponentOps = {
+export type ShouldShowUIComponentOps = {
     /**
      * Should be true to show the component, false to hide it. If not defined, then the default value from
      * the Element should be applied.
@@ -39,13 +39,13 @@ export type ShouldShowUiComponentOps = {
 /**
  * Listener for "should_show_component" request
  */
-export type ShouldShowUiComponentListener = (
-    shouldShowUiComponentOps: ShouldShowUiComponentOps,
-    component: UiComponent,
+export type ShouldShowUIComponentListener = (
+    shouldShowUIComponentOps: ShouldShowUIComponentOps,
+    component: UIComponent,
     matrixUserId: string
 ) => void;
 
-export enum UiComponent {
+export enum UIComponent {
     /**
      * Components that lead to a user being invited.
      */

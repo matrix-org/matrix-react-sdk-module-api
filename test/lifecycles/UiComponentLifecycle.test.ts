@@ -16,8 +16,8 @@ limitations under the License.
 */
 
 import {
-    UiComponentLifecycle, ShouldShowUiComponentOps, ShouldShowUiComponentListener, UiComponent,
-} from "../../src/lifecycles/UiComponentLifecycle";
+    UIComponentLifecycle, ShouldShowUIComponentOps, ShouldShowUIComponentListener, UIComponent,
+} from "../../src/lifecycles/UIComponentLifecycle";
 import { RuntimeModule } from "../../src/RuntimeModule";
 
 describe("UiComponentLifecycle", () => {
@@ -28,26 +28,26 @@ describe("UiComponentLifecycle", () => {
             constructor() {
                 super(undefined as any);
 
-                this.on(UiComponentLifecycle.ShouldShowComponent, this.shouldShowComponent);
+                this.on(UIComponentLifecycle.ShouldShowComponent, this.shouldShowComponent);
             }
 
-            protected shouldShowComponent: ShouldShowUiComponentListener = (
-                shouldShowUiComponentOps: ShouldShowUiComponentOps,
-                component: UiComponent,
+            protected shouldShowComponent: ShouldShowUIComponentListener = (
+                shouldShowUiComponentOps: ShouldShowUIComponentOps,
+                component: UIComponent,
                 matrixUserId: string,
             ) => {
-                shouldShowUiComponentOps.shouldShowComponent = component !== UiComponent.CreateRooms;
+                shouldShowUiComponentOps.shouldShowComponent = component !== UIComponent.CreateRooms;
             };
         };
     });
 
     it("should handle should_show_component request", () => {
-        const opts: ShouldShowUiComponentOps = {shouldShowComponent: undefined};
+        const opts: ShouldShowUIComponentOps = {shouldShowComponent: undefined};
 
-        module.emit(UiComponentLifecycle.ShouldShowComponent, opts, UiComponent.CreateRooms, "@user-id");
+        module.emit(UIComponentLifecycle.ShouldShowComponent, opts, UIComponent.CreateRooms, "@user-id");
         expect(opts.shouldShowComponent).toBe(false);
 
-        module.emit(UiComponentLifecycle.ShouldShowComponent, opts, UiComponent.ExploreRooms, "@user-id");
+        module.emit(UIComponentLifecycle.ShouldShowComponent, opts, UIComponent.ExploreRooms, "@user-id");
         expect(opts.shouldShowComponent).toBe(true);
     });
 });
