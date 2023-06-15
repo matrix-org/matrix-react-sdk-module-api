@@ -26,7 +26,7 @@ describe("UiComponentLifecycle", () => {
     beforeAll(() => {
         module = new class extends RuntimeModule {
             constructor() {
-                super(undefined);
+                super(undefined as any);
 
                 this.on(UiComponentLifecycle.ShouldShowComponent, this.shouldShowComponent);
             }
