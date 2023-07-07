@@ -1,6 +1,6 @@
 {
   "name": "@matrix-org/react-sdk-module-api",
-  "version": "0.0.6",
+  "version": "1.0.0",
   "description": "Module API surface for matrix-react-sdk",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
