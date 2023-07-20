@@ -17,7 +17,7 @@ limitations under the License.
 import React from "react";
 
 import { PlainSubstitution, TranslationStringsObject } from "./types/translations";
-import { DialogProps } from "./components/DialogContent";
+import { DialogContent, DialogProps } from "./components/DialogContent";
 import { AccountAuthInfo } from "./types/AccountAuthInfo";
 
 /**
@@ -52,7 +52,7 @@ export interface ModuleApi {
      * @returns Whether the user submitted the dialog or closed it, and the model returned by the
      * dialog component if submitted.
      */
-    openDialog<M extends object, P extends DialogProps = DialogProps, C extends React.Component = React.Component>(
+    openDialog<M extends object, P extends DialogProps = DialogProps, C extends DialogContent<P> = DialogContent<P>>(
         title: string,
         body: (props: P, ref: React.RefObject<C>) => React.ReactNode,
         props?: Omit<P, keyof DialogProps>,
