@@ -117,4 +117,11 @@ export interface ModuleApi {
      * @returns The config value verbatim.
      */
     getConfigValue<T>(namespace: string, key: string): T | undefined;
+
+    /**
+     * Get the user-id of the logged-in user
+     *
+     * @returns MXID for the logged-in user, or undefined if not logged in
+     */
+    getUserId(): string | undefined;
 }

@@ -41,8 +41,7 @@ export type ShouldShowUIComponentOps = {
  */
 export type ShouldShowUIComponentListener = (
     shouldShowUIComponentOps: ShouldShowUIComponentOps,
-    component: UIComponent,
-    matrixUserId: string
+    component: UIComponent
 ) => void;
 
 export enum UIComponent {

@@ -34,7 +34,6 @@ describe("UiComponentLifecycle", () => {
             protected shouldShowComponent: ShouldShowUIComponentListener = (
                 shouldShowUiComponentOps: ShouldShowUIComponentOps,
                 component: UIComponent,
-                matrixUserId: string,
             ) => {
                 shouldShowUiComponentOps.shouldShowComponent = component !== UIComponent.CreateRooms;
             };
