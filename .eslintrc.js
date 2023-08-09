@@ -32,9 +32,6 @@ module.exports = {
             "quote-props": "off", // "be sensible"
             "@typescript-eslint/no-explicit-any": "off", // handled at review time
 
-            // We want to go a bit long for clarity
-            "max-len": ["error", {"code": 160}],
-
             // Casing is something we'll resolve at review time
             "camelcase": "off",
             "@typescript-eslint/naming-convention": "off",
