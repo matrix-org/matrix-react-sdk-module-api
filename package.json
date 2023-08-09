@@ -1,6 +1,6 @@
 {
   "name": "@matrix-org/react-sdk-module-api",
-  "version": "0.0.4",
+  "version": "1.0.0",
   "description": "Module API surface for matrix-react-sdk",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -22,7 +22,8 @@
     "start": "tsc -p ./tsconfig.build.json -w",
     "test": "jest",
     "lint": "eslint src test && tsc --noEmit",
-    "lint:fix": "eslint --fix src test"
+    "lint:fix": "eslint --fix src test",
+    "prepublishOnly": "yarn build"
   },
   "devDependencies": {
     "@babel/cli": "^7.17.6",

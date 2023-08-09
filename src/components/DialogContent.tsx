@@ -42,7 +42,7 @@ export abstract class DialogContent<P extends DialogProps = DialogProps, S exten
         this.state = {
             busy: false,
             ...state,
-        };
+        } as S;
     }
 
     /**

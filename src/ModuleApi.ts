@@ -17,7 +17,7 @@ limitations under the License.
 import React from "react";
 
 import { PlainSubstitution, TranslationStringsObject } from "./types/translations";
-import { DialogProps } from "./components/DialogContent";
+import { DialogContent, DialogProps } from "./components/DialogContent";
 import { AccountAuthInfo } from "./types/AccountAuthInfo";
 import { ModuleUiDialogProps } from "./types/ModuleUiDialogProps";
 
@@ -53,7 +53,7 @@ export interface ModuleApi {
      * @returns Whether the user submitted the dialog or closed it, and the model returned by the
      * dialog component if submitted.
      */
-    openDialog<M extends object, P extends DialogProps = DialogProps, C extends React.Component = React.Component>(
+    openDialog<M extends object, P extends DialogProps = DialogProps, C extends DialogContent<P> = DialogContent<P>>(
         moduleUiDialogProps: ModuleUiDialogProps,
         body: (props: P, ref: React.RefObject<C>) => React.ReactNode,
         props?: Omit<P, keyof DialogProps>,
@@ -93,7 +93,8 @@ export interface ModuleApi {
 
     /**
      * Gets a value verbatim from the config. The returned value will be of the type specified
-     * by the user - it is not verified against a schema.
+     * by the user - it is not verified against a schema. If the value does not exist in the
+     * config then this will return undefined;
      *
      * The caller should provide a namespace which it owns to retrieve settings from. During
      * read, the `key` will be treated as a sub-key of the namespace on the overall configuration
@@ -116,5 +117,5 @@ export interface ModuleApi {
      * @param key The key to look up.
      * @returns The config value verbatim.
      */
-    getConfigValue<T>(namespace: string, key: string): T;
+    getConfigValue<T>(namespace: string, key: string): T | undefined;
 }

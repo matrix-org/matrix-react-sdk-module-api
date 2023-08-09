@@ -39,7 +39,7 @@ describe("WidgetLifecycle", () => {
     beforeAll(() => {
         module = new class extends RuntimeModule {
             constructor() {
-                super(undefined);
+                super(undefined as any);
 
                 this.on(WidgetLifecycle.CapabilitiesRequest, this.capabilitiesListener);
                 this.on(WidgetLifecycle.PreLoadRequest, this.preloadListener);
