@@ -17,22 +17,36 @@ limitations under the License.
 import * as React from "react";
 import { ModuleApi } from "../ModuleApi";
 import { PlainSubstitution } from "../types/translations";
+import { ModuleUiDialogOptions } from "../types/ModuleUiDialogOptions";
 
+/** Props for {@link DialogContent} */
 export interface DialogProps {
+    /**
+     * A reference to the active Module API .
+     */
     moduleApi: ModuleApi;
 
     /**
-     * Sets submit button as enabled or disabled on the dialog popup.
-     * @param canSubmit
+     * Updates the options of the dialog.
+     * @param options - The updates that should be applied to the dialog options.
      */
-    setCanSubmit(canSubmit: boolean): void;
+    setOptions(options: Partial<ModuleUiDialogOptions>): void;
+
+    /**
+     * Cancel the dialog programmatically.
+     */
+    cancel(): void;
 }
 
+/** State of {@link DialogContent} */
 export interface DialogState {
     busy: boolean;
     error?: string;
 }
 
+/**
+ * The content of a Dialog that was opened by the Module API.
+ */
 export abstract class DialogContent<P extends DialogProps = DialogProps, S extends DialogState = DialogState, M extends object = {}>
     extends React.PureComponent<P, S> {
 

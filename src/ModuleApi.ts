@@ -19,7 +19,7 @@ import React from "react";
 import { PlainSubstitution, TranslationStringsObject } from "./types/translations";
 import { DialogContent, DialogProps } from "./components/DialogContent";
 import { AccountAuthInfo } from "./types/AccountAuthInfo";
-import { ModuleUiDialogProps } from "./types/ModuleUiDialogProps";
+import { ModuleUiDialogOptions } from "./types/ModuleUiDialogOptions";
 
 /**
  * A module API surface for the react-sdk. Provides a stable API for modules to
@@ -47,14 +47,14 @@ export interface ModuleApi {
 
     /**
      * Opens a dialog in the client.
-     * @param moduleUiDialogProps Module UI Dialog props.
+     * @param titleOrOptions The title of the dialog, or an object that configures the dialog.
      * @param body The function which creates a body component for the dialog.
      * @param props Optional props to provide to the dialog.
      * @returns Whether the user submitted the dialog or closed it, and the model returned by the
      * dialog component if submitted.
      */
     openDialog<M extends object, P extends DialogProps = DialogProps, C extends DialogContent<P> = DialogContent<P>>(
-        moduleUiDialogProps: ModuleUiDialogProps,
+        titleOrOptions: string | ModuleUiDialogOptions,
         body: (props: P, ref: React.RefObject<C>) => React.ReactNode,
         props?: Omit<P, keyof DialogProps>,
     ): Promise<{ didOkOrSubmit: boolean, model: M }>;
