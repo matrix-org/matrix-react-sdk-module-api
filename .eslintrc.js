@@ -27,7 +27,6 @@ module.exports = {
             "@typescript-eslint/no-empty-interface": "off",
 
             // Turn off things we're not concerned about here
-            "quotes": "off",
             "object-curly-spacing": "off",
             "array-bracket-spacing": "off",
             "quote-props": "off", // "be sensible"
