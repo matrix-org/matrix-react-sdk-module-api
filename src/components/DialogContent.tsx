@@ -19,16 +19,21 @@ import { ModuleApi } from "../ModuleApi";
 import { PlainSubstitution } from "../types/translations";
 import { ModuleUiDialogOptions } from "../types/ModuleUiDialogOptions";
 
-/** Props for {@link DialogContent} */
+/** React properties for dialog content implementations based on {@link DialogContent} */
 export interface DialogProps {
     /**
-     * A reference to the active Module API .
+     * A reference to the active Module API.
      */
     moduleApi: ModuleApi;
 
     /**
-     * Updates the options of the dialog.
-     * @param options - The updates that should be applied to the dialog options.
+     * Callback to update the dialog options.
+     * 
+     * Dialog content implementations can call this to update any of the options that were
+     * originally set via {@link ModuleApi.openDialog}.
+     * 
+     * @param options - The updates that should be applied to the dialog options. Any properties
+     * not set in the {@link options} are left unchanged.
      */
     setOptions(options: Partial<ModuleUiDialogOptions>): void;
 
@@ -45,7 +50,8 @@ export interface DialogState {
 }
 
 /**
- * The content of a Dialog that was opened by the Module API.
+ * A base class for the content of a Dialog. This can be passed to the Module API with
+ * {@link ModuleApi.openDialog} to define the content inside the dialog.
  */
 export abstract class DialogContent<P extends DialogProps = DialogProps, S extends DialogState = DialogState, M extends object = {}>
     extends React.PureComponent<P, S> {
