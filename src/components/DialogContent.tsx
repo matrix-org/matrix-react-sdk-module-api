@@ -50,8 +50,10 @@ export interface DialogState {
 }
 
 /**
- * A base class for the content of a Dialog. This can be passed to the Module API with
- * {@link ModuleApi.openDialog} to define the content inside the dialog.
+ * Base class for the content of a Dialog.
+ * 
+ * The `body` callback passed to {@link ModuleApi.openDialog} should return an instance of a
+ * class based on this.
  */
 export abstract class DialogContent<P extends DialogProps = DialogProps, S extends DialogState = DialogState, M extends object = {}>
     extends React.PureComponent<P, S> {
