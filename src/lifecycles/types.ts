@@ -16,10 +16,10 @@ limitations under the License.
 
 import { RoomViewLifecycle } from "./RoomViewLifecycle";
 import { WidgetLifecycle } from "./WidgetLifecycle";
-import { BannerLifecycle } from "./BannerLifecycle";
+import { WrapperLifecycle } from "./WrapperLifecycle";
 
 export type AnyLifecycle =
     | RoomViewLifecycle
     | WidgetLifecycle
-    | BannerLifecycle
+    | WrapperLifecycle
     ;
