@@ -33,7 +33,11 @@ describe('WrapperLifecycle', () => {
 
             protected wrapperListener: WrapperListener = (wrapperOpts: WrapperOpts) => {
                 wrapperOpts.Wrapper = ({ children }) => {
-                    return <><div>Header</div>{children}<div>Footer</div></>;
+                    return <>
+                        <header>Header</header>
+                        {children}
+                        <footer>Footer</footer>
+                    </>;
                 };
             };
         };
