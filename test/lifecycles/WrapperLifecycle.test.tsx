@@ -14,6 +14,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 
@@ -48,9 +49,16 @@ describe('WrapperLifecycle', () => {
         module.emit(WrapperLifecycle.Wrapper, opts);
 
         render(<opts.Wrapper><span>MatrixChat</span></opts.Wrapper>);
-        screen.getByText(/Header/i);
-        screen.getByText(/MatrixChat/i);
-        screen.getByText(/Footer/i);
+
+        const header = screen.getByRole('banner');
+        expect(header).toBeInTheDocument();
+        const matrixChat = screen.getByText(/MatrixChat/i);
+        expect(matrixChat).toBeInTheDocument();
+        const footer = screen.getByRole('contentinfo');
+        expect(footer).toBeInTheDocument();
+
+        expect(header.nextSibling).toBe(matrixChat);
+        expect(matrixChat.nextSibling).toBe(footer);
     });
 });
 
