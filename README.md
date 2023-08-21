@@ -110,6 +110,9 @@ environment going.
 
 ## Releases
 
+Releases are performed by the [release automation](https://github.com/matrix-org/matrix-react-sdk-module-api/actions/workflows/release.yaml) GitHub action.
+Package versions follow the [semantic versioning spec](https://semver.org/)
+
 Because this is a scoped package, it needs to be published in a special way:
 
 ```bash
