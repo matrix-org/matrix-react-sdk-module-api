@@ -18,7 +18,7 @@ limitations under the License.
 // to appease the linter's requirements.
 
 describe("placeholder", () => {
-    it('should pass the linter', () => {
+    it("should pass the linter", () => {
         // nothing to do.
     });
 });

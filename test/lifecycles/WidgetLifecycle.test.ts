@@ -16,10 +16,12 @@ limitations under the License.
 */
 
 import {
-    ApprovalListener, ApprovalOpts,
+    ApprovalListener,
+    ApprovalOpts,
     CapabilitiesListener,
     CapabilitiesOpts,
-    WidgetInfo, WidgetLifecycle,
+    WidgetInfo,
+    WidgetLifecycle,
 } from "../../src/lifecycles/WidgetLifecycle";
 import { RuntimeModule } from "../../src/RuntimeModule";
 
@@ -37,7 +39,7 @@ describe("WidgetLifecycle", () => {
     let module: RuntimeModule;
 
     beforeAll(() => {
-        module = new class extends RuntimeModule {
+        module = new (class extends RuntimeModule {
             constructor() {
                 super(undefined as any);
 
@@ -61,19 +63,24 @@ describe("WidgetLifecycle", () => {
             protected identityListener: ApprovalListener = (approvalOpts: ApprovalOpts, widgetInfo: WidgetInfo) => {
                 approvalOpts.approved = false;
             };
-        };
+        })();
     });
 
-    it('should handle widget permissions requests', () => {
-        const capabilitiesOpts: CapabilitiesOpts = {approvedCapabilities: new Set()};
-        module.emit(WidgetLifecycle.CapabilitiesRequest, capabilitiesOpts, mockWidget, new Set(["org.matrix.msc2931.navigate"]));
+    it("should handle widget permissions requests", () => {
+        const capabilitiesOpts: CapabilitiesOpts = { approvedCapabilities: new Set() };
+        module.emit(
+            WidgetLifecycle.CapabilitiesRequest,
+            capabilitiesOpts,
+            mockWidget,
+            new Set(["org.matrix.msc2931.navigate"]),
+        );
         expect(capabilitiesOpts.approvedCapabilities).toEqual(new Set(["org.matrix.msc2931.navigate"]));
 
-        const preloadOpts: ApprovalOpts = {approved: undefined};
+        const preloadOpts: ApprovalOpts = { approved: undefined };
         module.emit(WidgetLifecycle.PreLoadRequest, preloadOpts, mockWidget);
         expect(preloadOpts.approved).toBe(true);
 
-        const identityOpts: ApprovalOpts = {approved: undefined};
+        const identityOpts: ApprovalOpts = { approved: undefined };
         module.emit(WidgetLifecycle.IdentityRequest, identityOpts, mockWidget);
         expect(identityOpts.approved).toBe(false);
     });

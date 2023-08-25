@@ -1,55 +1,55 @@
 name: Main
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
 jobs:
-  # Global
-  # ================================================
+    # Global
+    # ================================================
 
-  eslint:
-    name: "ESLint (Node ${{ matrix.node }})"
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [18, latest]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-      - run: yarn install
-      - run: yarn lint
+    eslint:
+        name: "ESLint (Node ${{ matrix.node }})"
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node: [18, latest]
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node }}
+            - run: yarn install
+            - run: yarn lint
 
-  build:
-    name: "Build (Node ${{ matrix.node }})"
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [18, latest]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-      - run: yarn install
-      - run: yarn build
+    build:
+        name: "Build (Node ${{ matrix.node }})"
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node: [18, latest]
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node }}
+            - run: yarn install
+            - run: yarn build
 
-  tests:
-    name: "Tests (Node ${{ matrix.node }})"
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node: [18, latest]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node }}
-      - run: yarn install
-      - uses: nick-invision/retry@v2
-        with:
-          max_attempts: 5
-          timeout_minutes: 5
-          command: yarn test
+    tests:
+        name: "Tests (Node ${{ matrix.node }})"
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node: [18, latest]
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node }}
+            - run: yarn install
+            - uses: nick-invision/retry@v2
+              with:
+                  max_attempts: 5
+                  timeout_minutes: 5
+                  command: yarn test

@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { ComponentType, PropsWithChildren } from 'react';
+import { ComponentType, PropsWithChildren } from "react";
 
 /**
  * Wrapper lifecycle events
@@ -24,7 +24,7 @@ export enum WrapperLifecycle {
     /**
      * An event to request the wrapper. It is sent by Element to get the wrapper provided by the module if any.
      */
-    Wrapper = 'wrapper'
+    Wrapper = "wrapper",
 }
 
 /**
