@@ -39,7 +39,7 @@ general, avoid using `export default`.
 
 The remaining code-style for this project is not formally documented, but
 contributors are encouraged to read the
-[code style document for matrix-react-sdk](https://github.com/matrix-org/matrix-react-sdk/blob/master/code_style.md)
+[code style document for element-web](https://github.com/vector-im/element-web/blob/develop/code_style.md)
 and follow the principles set out there.
 
 Please ensure your changes match the cosmetic style of the existing project,

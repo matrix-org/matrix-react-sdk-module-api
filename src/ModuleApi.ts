@@ -59,7 +59,7 @@ export interface ModuleApi {
         initialTitleOrOptions: string | ModuleUiDialogOptions,
         body: (props: P, ref: React.RefObject<C>) => React.ReactNode,
         props?: Omit<P, keyof DialogProps>,
-    ): Promise<{ didOkOrSubmit: boolean, model: M }>;
+    ): Promise<{ didOkOrSubmit: boolean; model: M }>;
 
     /**
      * Registers for an account on the currently connected homeserver. This requires that the homeserver

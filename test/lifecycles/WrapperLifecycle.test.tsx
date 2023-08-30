@@ -15,17 +15,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from 'react';
-import { render, screen } from '@testing-library/react';
+import React from "react";
+import { render, screen } from "@testing-library/react";
 
-import { RuntimeModule } from '../../src/RuntimeModule';
-import { WrapperLifecycle, WrapperListener, WrapperOpts } from '../../src/lifecycles/WrapperLifecycle';
+import { RuntimeModule } from "../../src/RuntimeModule";
+import { WrapperLifecycle, WrapperListener, WrapperOpts } from "../../src/lifecycles/WrapperLifecycle";
 
-describe('WrapperLifecycle', () => {
+describe("WrapperLifecycle", () => {
     let module: RuntimeModule;
 
     beforeAll(() => {
-        module = new class extends RuntimeModule {
+        module = new (class extends RuntimeModule {
             constructor() {
                 super(undefined as any);
 
@@ -34,31 +34,36 @@ describe('WrapperLifecycle', () => {
 
             protected wrapperListener: WrapperListener = (wrapperOpts: WrapperOpts) => {
                 wrapperOpts.Wrapper = ({ children }) => {
-                    return <>
-                        <header>Header</header>
-                        {children}
-                        <footer>Footer</footer>
-                    </>;
+                    return (
+                        <>
+                            <header>Header</header>
+                            {children}
+                            <footer>Footer</footer>
+                        </>
+                    );
                 };
             };
-        };
+        })();
     });
 
-    it('should wrap a matrix client with header and footer', () => {
+    it("should wrap a matrix client with header and footer", () => {
         const opts: WrapperOpts = { Wrapper: React.Fragment };
         module.emit(WrapperLifecycle.Wrapper, opts);
 
-        render(<opts.Wrapper><span>MatrixChat</span></opts.Wrapper>);
+        render(
+            <opts.Wrapper>
+                <span>MatrixChat</span>
+            </opts.Wrapper>,
+        );
 
-        const header = screen.getByRole('banner');
+        const header = screen.getByRole("banner");
         expect(header).toBeInTheDocument();
         const matrixChat = screen.getByText(/MatrixChat/i);
         expect(matrixChat).toBeInTheDocument();
-        const footer = screen.getByRole('contentinfo');
+        const footer = screen.getByRole("contentinfo");
         expect(footer).toBeInTheDocument();
 
         expect(header.nextSibling).toBe(matrixChat);
         expect(matrixChat.nextSibling).toBe(footer);
     });
 });
-
