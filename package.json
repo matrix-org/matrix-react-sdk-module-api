@@ -21,7 +21,7 @@
         "build:compile": "babel -d lib --verbose --extensions \".ts,.tsx\" src",
         "start": "tsc -p ./tsconfig.build.json -w",
         "test": "jest",
-        "lint": "eslint src test && tsc --noEmit && prettier --check",
+        "lint": "eslint src test && tsc --noEmit && prettier --check .",
         "lint:fix": "prettier --write . && eslint --fix src test",
         "prepublishOnly": "yarn build"
     },
