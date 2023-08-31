@@ -31,7 +31,7 @@ export class TextInputField extends React.PureComponent<TextInputFieldProps> {
     public static renderFactory = (props: TextInputFieldProps): React.ReactNode => (
         <label>
             {props.label}
-            <input type="text" onChange={e => props.onChange(e.target.value)} value={props.value} />
+            <input type="text" onChange={(e) => props.onChange(e.target.value)} value={props.value} />
         </label>
     );
 

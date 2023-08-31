@@ -38,15 +38,15 @@ function on a `ModuleApi` instance. For example:
 this.moduleApi.registerTranslations({
     // If you use the translation utilities within your module, register your strings
     "My custom string": {
-        "en": "My custom string",
-        "fr": "Ma chaîne personnalisée",
+        en: "My custom string",
+        fr: "Ma chaîne personnalisée",
     },
-    
+
     // If you want to override a string already in the app, such as the power level role
     // names, use the base string here and redefine the values for each applicable language.
     "A string that might already exist in the app": {
-        "en": "Replacement value for that string",
-        "fr": "Valeur de remplacement pour cette chaîne",
+        en: "Replacement value for that string",
+        fr: "Valeur de remplacement pour cette chaîne",
     },
 });
 ```
@@ -62,7 +62,7 @@ properties definition, and a dialog component type. The dialog component itself 
 the module API in order to open correctly.
 
 The dialog component overrides `trySubmit()` and returns a promise for the return model, which is then passed back through
-to the promise returned by `openDialog()`. 
+to the promise returned by `openDialog()`.
 
 The `DialogContent<>` component is supplied with supporting components at the react-sdk layer to make dialog handling
 generic: all a module needs to do is supply the content that goes into the dialog.
@@ -85,7 +85,7 @@ be subpar.
 
 Modules can register for an account without overriding the logged-in user's auth data with the `registerSimpleAccount()`
 function on a `ModuleApi` instance. If the module would like to use that auth data, or has a different set of
-authentication information in mind, it can call `overwriteAccountAuth()` on a `ModuleApi` instance to overwrite 
+authentication information in mind, it can call `overwriteAccountAuth()` on a `ModuleApi` instance to overwrite
 (**without warning**) the current user's session.
 
 ### View management
@@ -95,8 +95,13 @@ a small bit of the UI behaviour. For example, listening for `RoomViewLifecycle.P
 to change the behaviour of the "room preview bar" to enable future cases of `RoomViewLifecycle.JoinFromRoomPreview`
 being raised for additional handling.
 
-The module can also change what room/user/entity the user is looking at, and join it (if it's a room), with 
+The module can also change what room/user/entity the user is looking at, and join it (if it's a room), with
 `navigatePermalink` on a `ModuleApi` instance.
+
+### Wrapper management
+
+From the `RuntimeModule` instance, modules can listen for `WrapperLifecycle.Wrapper` to provide a wrapper react component.
+It would wrap the `MatrixChat` component and let any consumer add a header, a footer.
 
 ## Contributing / developing
 

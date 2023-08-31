@@ -28,10 +28,10 @@ export interface DialogProps {
 
     /**
      * Callback to update the dialog options.
-     * 
+     *
      * Dialog content implementations can call this to update any of the options that were
      * originally set via {@link ModuleApi.openDialog}.
-     * 
+     *
      * @param options - The updates that should be applied to the dialog options. Any properties
      * not set in the {@link options} are left unchanged.
      */
@@ -51,13 +51,15 @@ export interface DialogState {
 
 /**
  * Base class for the content of a Dialog.
- * 
+ *
  * The `body` callback passed to {@link ModuleApi.openDialog} should return an instance of a
  * class based on this.
  */
-export abstract class DialogContent<P extends DialogProps = DialogProps, S extends DialogState = DialogState, M extends object = {}>
-    extends React.PureComponent<P, S> {
-
+export abstract class DialogContent<
+    P extends DialogProps = DialogProps,
+    S extends DialogState = DialogState,
+    M extends object = {},
+> extends React.PureComponent<P, S> {
     protected constructor(props: P, state?: S) {
         super(props);
 
