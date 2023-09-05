@@ -16,7 +16,10 @@ limitations under the License.
 */
 
 import {
-    UIComponentLifecycle, ShouldShowUIComponentOps, ShouldShowUIComponentListener, UIComponent,
+    UIComponentLifecycle,
+    ShouldShowUIComponentOps,
+    ShouldShowUIComponentListener,
+    UIComponent,
 } from "../../src/lifecycles/UIComponentLifecycle";
 import { RuntimeModule } from "../../src/RuntimeModule";
 
@@ -24,8 +27,8 @@ describe("UiComponentLifecycle", () => {
     let module: RuntimeModule;
 
     beforeAll(() => {
-        module = new class extends RuntimeModule {
-            constructor() {
+        module = new (class extends RuntimeModule {
+            public constructor() {
                 super(undefined as any);
 
                 this.on(UIComponentLifecycle.ShouldShowComponent, this.shouldShowComponent);
@@ -37,11 +40,11 @@ describe("UiComponentLifecycle", () => {
             ) => {
                 shouldShowUiComponentOps.shouldShowComponent = component !== UIComponent.CreateRooms;
             };
-        };
+        })();
     });
 
     it("should handle should_show_component request", () => {
-        const opts: ShouldShowUIComponentOps = {shouldShowComponent: undefined};
+        const opts: ShouldShowUIComponentOps = { shouldShowComponent: undefined };
 
         module.emit(UIComponentLifecycle.ShouldShowComponent, opts, UIComponent.CreateRooms, "@user-id");
         expect(opts.shouldShowComponent).toBe(false);

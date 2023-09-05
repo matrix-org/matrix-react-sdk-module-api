@@ -22,7 +22,7 @@ export enum UIComponentLifecycle {
     /**
      * An event to check if component should be shown by the Element.
      */
-    ShouldShowComponent = "should_show_component"
+    ShouldShowComponent = "should_show_component",
 }
 
 /**
@@ -41,7 +41,7 @@ export type ShouldShowUIComponentOps = {
  */
 export type ShouldShowUIComponentListener = (
     shouldShowUIComponentOps: ShouldShowUIComponentOps,
-    component: UIComponent
+    component: UIComponent,
 ) => void;
 
 export enum UIComponent {
