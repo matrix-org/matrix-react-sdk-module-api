@@ -38,10 +38,7 @@ export type CapabilitiesListener = (
 /**
  * Listener for PreLoad and Identity requests
  */
-export type ApprovalListener = (
-    approvalOpts: ApprovalOpts,
-    widgetInfo: WidgetInfo
-) => void;
+export type ApprovalListener = (approvalOpts: ApprovalOpts, widgetInfo: WidgetInfo) => void;
 
 /**
  * Represents the widget
