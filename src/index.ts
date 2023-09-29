@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-export type { TranslationStringsObject } from "./types/translations"
+export type { TranslationStringsObject } from "./types/translations";
 
 export { ModuleApi } from "./ModuleApi";
 export { RuntimeModule } from "./RuntimeModule";
