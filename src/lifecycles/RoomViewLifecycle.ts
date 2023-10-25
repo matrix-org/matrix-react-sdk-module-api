@@ -14,15 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import React from "react";
+
 export enum RoomViewLifecycle {
     PreviewRoomNotLoggedIn = "preview_not_logged_in",
     JoinFromRoomPreview = "try_join_not_logged_in",
+    RenderRoomHeader = "render_room_header",
 }
 
 export type RoomPreviewOpts = {
     canJoin: boolean;
 };
 
+export type RoomHeaderOpts = {
+    buttons: Array<{
+        icon: React.ReactNode;
+        id: string;
+        label: () => string;
+        onClick: () => void;
+    }>;
+};
+
 export type RoomPreviewListener = (opts: RoomPreviewOpts, roomId: string) => void;
 
 export type JoinFromPreviewListener = (roomId: string) => void;
+
+export type RoomHeaderListener = (opts: RoomHeaderOpts, roomId: string) => void;
