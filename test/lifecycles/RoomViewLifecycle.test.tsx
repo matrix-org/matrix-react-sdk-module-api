@@ -15,10 +15,10 @@ limitations under the License.
 */
 
 import { RuntimeModule } from "../../src";
-import { RoomHeaderListener, RoomHeaderOpts, RoomViewLifecycle } from "../../src/lifecycles/RoomViewLifecycle";
+import { ViewRoomListener, ViewRoomOpts, RoomViewLifecycle } from "../../src/lifecycles/RoomViewLifecycle";
 
 describe("RoomViewLifecycle", () => {
-    const roomHeaderOpts: RoomHeaderOpts = {
+    const roomHeaderOpts: ViewRoomOpts = {
         buttons: [
             {
                 icon: "test-icon",
@@ -36,18 +36,18 @@ describe("RoomViewLifecycle", () => {
             public constructor() {
                 super(undefined as any);
 
-                this.on(RoomViewLifecycle.RenderRoomHeader, this.renderRoomHeaderListener);
+                this.on(RoomViewLifecycle.ViewRoom, this.renderRoomHeaderListener);
             }
 
-            protected renderRoomHeaderListener: RoomHeaderListener = (opts, roomId) => {
+            protected renderRoomHeaderListener: ViewRoomListener = (opts, roomId) => {
                 opts.buttons = roomHeaderOpts.buttons;
             };
         })();
     });
 
     it("should handle additional buttons", () => {
-        const opts: RoomHeaderOpts = { buttons: [] };
-        module.emit(RoomViewLifecycle.RenderRoomHeader, opts);
+        const opts: ViewRoomOpts = { buttons: [] };
+        module.emit(RoomViewLifecycle.ViewRoom, opts);
         expect(opts).toEqual(roomHeaderOpts);
     });
 });

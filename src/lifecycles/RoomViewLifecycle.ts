@@ -19,14 +19,14 @@ import React from "react";
 export enum RoomViewLifecycle {
     PreviewRoomNotLoggedIn = "preview_not_logged_in",
     JoinFromRoomPreview = "try_join_not_logged_in",
-    RenderRoomHeader = "render_room_header",
+    ViewRoom = "view_room",
 }
 
 export type RoomPreviewOpts = {
     canJoin: boolean;
 };
 
-export type RoomHeaderOpts = {
+export type ViewRoomOpts = {
     buttons: Array<{
         icon: React.ReactNode;
         id: string;
@@ -39,4 +39,4 @@ export type RoomPreviewListener = (opts: RoomPreviewOpts, roomId: string) => voi
 
 export type JoinFromPreviewListener = (roomId: string) => void;
 
-export type RoomHeaderListener = (opts: RoomHeaderOpts, roomId: string) => void;
+export type ViewRoomListener = (opts: ViewRoomOpts, roomId: string) => void;
