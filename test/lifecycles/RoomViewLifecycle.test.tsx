@@ -21,7 +21,7 @@ describe("RoomViewLifecycle", () => {
     const roomHeaderOpts: ViewRoomOpts = {
         buttons: [
             {
-                icon: "test-icon",
+                icon: () => "test-icon",
                 id: "test-id",
                 label: () => "test-label",
                 onClick: () => {},
