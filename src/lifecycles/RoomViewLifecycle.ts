@@ -28,7 +28,7 @@ export type RoomPreviewOpts = {
 
 export type ViewRoomOpts = {
     buttons: Array<{
-        icon: React.ReactNode;
+        icon: () => React.ReactNode;
         id: string;
         label: () => string;
         onClick: () => void;
