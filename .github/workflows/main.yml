@@ -13,7 +13,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node: [18, *]
+                node: [18, "*"]
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -44,7 +44,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node: [18, *]
+                node: [18, "*"]
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
@@ -59,7 +59,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node: [18, *]
+                node: [18, "*"]
         steps:
             - uses: actions/checkout@v4
             - uses: actions/setup-node@v4
