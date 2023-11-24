@@ -21,9 +21,10 @@
         "build:compile": "babel -d lib --verbose --extensions \".ts,.tsx\" src",
         "start": "tsc -p ./tsconfig.build.json -w",
         "test": "jest",
-        "lint": "yarn lint:js && yarn lint:workflows",
-        "lint:js": "eslint src test && tsc --noEmit && prettier --check .",
-        "lint:js-fix": "prettier --write . && eslint --fix src test",
+        "lint": "yarn lint:js && yarn lint:types && yarn lint:workflows",
+        "lint:js": "eslint src test && prettier --check .",
+        "lint:js-fix": "eslint --fix src test && prettier --write .",
+        "lint:types": "tsc --noEmit",
         "lint:workflows": "find .github/workflows -type f \\( -iname '*.yaml' -o -iname '*.yml' \\) | xargs -I {} sh -c 'echo \"Linting {}\"; action-validator \"{}\"'",
         "prepublishOnly": "yarn build"
     },
