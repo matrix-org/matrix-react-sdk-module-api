@@ -17,5 +17,15 @@ limitations under the License.
 import { RoomViewLifecycle } from "./RoomViewLifecycle";
 import { WidgetLifecycle } from "./WidgetLifecycle";
 import { WrapperLifecycle } from "./WrapperLifecycle";
+import {
+    SecurityLifecycle,
+    SecurityExtensionMethods
+} from "./SecurityLifecycle";
 
 export type AnyLifecycle = RoomViewLifecycle | WidgetLifecycle | WrapperLifecycle;
+
+export type AnyExtensionMethod  = SecurityExtensionMethods;
+
+export type ExtensionMethodResult = string | {} | undefined;
+export type ExtensionMethod<ExtensionMethodResult> = (arg: any) => ExtensionMethodResult;
+
