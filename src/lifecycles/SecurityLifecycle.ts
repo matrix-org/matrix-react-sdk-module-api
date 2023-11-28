@@ -27,13 +27,31 @@ export interface IExamineLoginResponseCreds {
     freshLogin?: boolean;
 }
 
+export type ExamineLoginResponseListener = (response: any, credentials: IExamineLoginResponseCreds) => void;
+
 export enum SecurityLifecycle {
     ExamineLoginResponse = "examine_login_response",
 }
 
-export enum SecurityExtensionMethods {
-    GetSecretStorageKey = "get_secret_storage_key"
+export enum SecurityExtensionMethodName {
+    GetSecretStorageKey = "get_secret_storage_key",
+    SetupCryptoMethod = "SetupCryptoMethod"
 } 
 
-export type ExamineLoginResponseListener = (response: any, credentials: IExamineLoginResponseCreds) => void;
-export type GetSecretStorageKey = () => string;
+//export type SecurityExtensionMethod = GetSecretStorageKeyMethod | SetupCryptoMethod | SetupCrypto2Method
+export type SecurityExtensionResult = GetSecretStorageKeyResult | SetupCryptoResult | SetupCrypto2Result
+export type SecurityExtensionArgs = GetSecretStorageKeyArg | SetupCryptoArg | SetupCrypto2Method
+
+
+export type GetSecretStorageKeyArg = undefined;
+export type GetSecretStorageKeyResult = string;
+export type GetSecretStorageKeyMethod = () => GetSecretStorageKeyResult;
+
+export type SetupCryptoArg = {key: string};
+export type SetupCryptoResult  = string;
+export type SetupCryptoMethod  = (x: SetupCryptoArg) => SetupCryptoResult;
+
+export type SetupCrypto2Arg  = undefined;
+export type SetupCrypto2Result  = string;
+export type SetupCrypto2Method  = () => SetupCrypto2Result;
+

@@ -19,13 +19,18 @@ import { WidgetLifecycle } from "./WidgetLifecycle";
 import { WrapperLifecycle } from "./WrapperLifecycle";
 import {
     SecurityLifecycle,
-    SecurityExtensionMethods
+    SecurityExtensionArgs,
+    SecurityExtensionResult,
+    SecurityExtensionMethodName,    
 } from "./SecurityLifecycle";
 
 export type AnyLifecycle = RoomViewLifecycle | WidgetLifecycle | WrapperLifecycle;
 
-export type AnyExtensionMethod  = SecurityExtensionMethods;
+export type AnyExtensionMethodName  = SecurityExtensionMethodName;
+export type AnyExtensionMethodArg = SecurityExtensionArgs;
+export type AnyExtensionMethodResult = SecurityExtensionResult;
+export type ExtensionMethodType = (a?: AnyExtensionMethodArg) => AnyExtensionMethodResult;
 
-export type ExtensionMethodResult = string | {} | undefined;
-export type ExtensionMethod<ExtensionMethodResult> = (arg: any) => ExtensionMethodResult;
+
+
 

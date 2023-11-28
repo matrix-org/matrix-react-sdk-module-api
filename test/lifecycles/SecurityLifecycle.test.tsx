@@ -16,8 +16,12 @@ limitations under the License.
 
 import { RuntimeModule } from "../../src";
 import {
-    SecurityLifecycle,
-    SecurityExtensionMethods
+    GetSecretStorageKeyMethod,
+    GetSecretStorageKeyArg,
+    GetSecretStorageKeyResult,
+    SecurityExtensionMethodName,
+    SetupCryptoArg,
+    SetupCryptoResult
 } from "../../src/lifecycles/SecurityLifecycle";
 
 describe("SecurityLifecycle", () => {
@@ -28,14 +32,25 @@ describe("SecurityLifecycle", () => {
         module = new (class extends RuntimeModule {
             public constructor() {
                 super(undefined as any);
-                this.fetchers.set(SecurityExtensionMethods.GetSecretStorageKey,(a)=>a);
             }
         })();
     });
 
     it("should return correct value from method", () => {
-        var method = module.fetchers.get(SecurityExtensionMethods.GetSecretStorageKey)!;
-        let result = method("echo this")
-        expect(result).toEqual("echo this");
+
+
+        var m: GetSecretStorageKeyMethod = () => "return this"        
+        module.methods.set(SecurityExtensionMethodName.GetSecretStorageKey, m);
+
+        var method = module.methods.get(SecurityExtensionMethodName.GetSecretStorageKey)!;
+        let result = method();
+        expect(result).toEqual("return this");
+    });
+
+    it("should not allow registering method with wrong argument types", () => {
+        module.methods.set(SecurityExtensionMethodName.SetupCryptoMethod, (a: SetupCryptoArg): SetupCryptoResult => a.key);
+        var method = module.methods.get(SecurityExtensionMethodName.GetSecretStorageKey)!;
+        let result = method({key: "echo my prop"})
+        expect(result).toEqual("echo my prop");
     });
 });
