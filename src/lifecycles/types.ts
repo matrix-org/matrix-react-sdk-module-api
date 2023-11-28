@@ -17,20 +17,47 @@ limitations under the License.
 import { RoomViewLifecycle } from "./RoomViewLifecycle";
 import { WidgetLifecycle } from "./WidgetLifecycle";
 import { WrapperLifecycle } from "./WrapperLifecycle";
-import {
-    SecurityLifecycle,
-    SecurityExtensionArgs,
-    SecurityExtensionResult,
-    SecurityExtensionMethodName,    
-} from "./SecurityLifecycle";
-
 export type AnyLifecycle = RoomViewLifecycle | WidgetLifecycle | WrapperLifecycle;
 
-export type AnyExtensionMethodName  = SecurityExtensionMethodName;
-export type AnyExtensionMethodArg = SecurityExtensionArgs;
-export type AnyExtensionMethodResult = SecurityExtensionResult;
-export type ExtensionMethodType = (a?: AnyExtensionMethodArg) => AnyExtensionMethodResult;
+
+/* Extension methods */ 
+import { 
+    IProvideCryptoSetupExtensions, 
+    IProvideOtherExtensions
+} from "./SecurityLifecycle";
+import { RuntimeModule } from "../RuntimeModule";
 
 
+export class ProxiedExtensions {
 
+    public modules: RuntimeModule[] = new Array<RuntimeModule>()
 
+    private extensionGetter =  (target: any, prop: string, receiver: any) => {
+        if(prop == "cryptoSetup"){                
+            let m = this.modules.find( m => {                   
+                let ext = m.extensions![prop];
+                return  ext != undefined
+            });
+            return m?.extensions?.cryptoSetup;
+        }
+    }
+
+    private handler = {
+        get: this.extensionGetter
+    }
+  
+    public extensions: AllExtensions = new Proxy(
+        {        
+        cryptoSetup: undefined,
+        other: undefined
+        }, this.handler);
+
+    constructor(modules: RuntimeModule[]){
+        this.modules = modules;
+    }
+}
+
+export type AllExtensions = {
+        cryptoSetup?: IProvideCryptoSetupExtensions,
+        other?: IProvideOtherExtensions     
+}

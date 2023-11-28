@@ -16,12 +16,9 @@ limitations under the License.
 
 import { RuntimeModule } from "../../src";
 import {
-    GetSecretStorageKeyMethod,
-    GetSecretStorageKeyArg,
-    GetSecretStorageKeyResult,
-    SecurityExtensionMethodName,
-    SetupCryptoArg,
-    SetupCryptoResult
+    IExtendedMatrixClientCreds,
+    CryptoSetupExtensionsBase,
+    ProxiedExtensions
 } from "../../src/lifecycles/SecurityLifecycle";
 
 describe("SecurityLifecycle", () => {
@@ -32,25 +29,133 @@ describe("SecurityLifecycle", () => {
         module = new (class extends RuntimeModule {
             public constructor() {
                 super(undefined as any);
+
+                this.extensions = {
+                    cryptoSetup: new (class extends CryptoSetupExtensionsBase {
+                        GetSecretStorageKey() {
+                            return "my secret storage key"
+                        }
+        
+                        ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {      
+                            credentials.secureBackupKey = "my secure backup key";          
+                        }
+                    })()
+                }
+
             }
         })();
     });
 
     it("should return correct value from method", () => {
-
-
-        var m: GetSecretStorageKeyMethod = () => "return this"        
-        module.methods.set(SecurityExtensionMethodName.GetSecretStorageKey, m);
-
-        var method = module.methods.get(SecurityExtensionMethodName.GetSecretStorageKey)!;
-        let result = method();
-        expect(result).toEqual("return this");
+        let result = module.extensions!.cryptoSetup!.GetSecretStorageKey();
+        expect(result).toEqual("my secret storage key");
     });
 
-    it("should not allow registering method with wrong argument types", () => {
-        module.methods.set(SecurityExtensionMethodName.SetupCryptoMethod, (a: SetupCryptoArg): SetupCryptoResult => a.key);
-        var method = module.methods.get(SecurityExtensionMethodName.GetSecretStorageKey)!;
-        let result = method({key: "echo my prop"})
-        expect(result).toEqual("echo my prop");
+    it("should allow adding secure backup key to login response", () => {
+        var credentials = new (class implements IExtendedMatrixClientCreds {
+            identityServerUrl?: string | undefined;
+            userId: string = ""
+            deviceId?: string | undefined;
+            accessToken: string = ""
+            refreshToken?: string | undefined;
+            guest?: boolean | undefined;
+            pickleKey?: string | undefined;
+            freshLogin?: boolean | undefined;
+            homeserverUrl: string = ""
+            secureBackupKey?: string | undefined = ""            
+        });
+
+        module.extensions!.cryptoSetup!.ExamineLoginResponse({secureBackupKey: "my key"}, credentials );
+        expect(credentials.secureBackupKey).toEqual("my secure backup key");
+    });
+
+    it("proxy must throw when no implementation in modules", () => {
+
+
+        var modules = [
+
+            new (class extends RuntimeModule {
+                public constructor() {
+                    super(undefined as any);
+    
+                    this.extensions = {
+                        cryptoSetup: undefined
+                    }    
+                }
+            })(),
+
+            new (class extends RuntimeModule {
+                public constructor() {
+                    super(undefined as any);
+    
+                    this.extensions = {
+                        cryptoSetup: undefined
+                    }
+                }
+            })()
+        ];
+
+        var proxiedExtensions = new ProxiedExtensions(modules);
+
+        let t = () => proxiedExtensions.extensions.cryptoSetup!.GetSecretStorageKey();    
+        expect(t).toThrow(Error);
+    
+    });
+    
+    it("proxy must throw when no implementation in modules", () => {
+
+        var modules = new Array<RuntimeModule>();
+        var proxiedExtensions = new ProxiedExtensions(modules);
+
+        let t = () => proxiedExtensions.extensions.cryptoSetup!.GetSecretStorageKey();    
+        expect(t).toThrow(Error);    
+    });
+
+
+    it("proxy must select module with extension implementation", () => {
+
+
+        var modules = [
+
+            new (class extends RuntimeModule {
+                public constructor() {
+                    super(undefined as any);
+    
+                    this.extensions = {
+                        cryptoSetup: new (class extends CryptoSetupExtensionsBase {
+                            GetSecretStorageKey() {
+                                return "my secret storage key"
+                            }
+            
+                            ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {      
+                                credentials.secureBackupKey = "my secure backup key";          
+                            }
+                        })()
+                    }
+                }
+            })(),
+
+            new (class extends RuntimeModule {
+                public constructor() {
+                    super(undefined as any);
+    
+                    this.extensions = {
+                        cryptoSetup: new (class extends CryptoSetupExtensionsBase {
+                            GetSecretStorageKey() {
+                                return "my secret storage key"
+                            }
+            
+                            ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {      
+                                credentials.secureBackupKey = "my secure backup key";          
+                            }
+                        })()
+                    }
+                }
+            })()
+        ];
+
+        var proxiedExtensions = new ProxiedExtensions(modules);
+        let result = proxiedExtensions.extensions.cryptoSetup!.GetSecretStorageKey();
+        expect(result).toEqual("my secret storage key");
     });
 });

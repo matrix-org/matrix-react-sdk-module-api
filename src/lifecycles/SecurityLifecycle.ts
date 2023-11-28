@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { RuntimeModule } from "../RuntimeModule";
+import { AllExtensions } from "./types";
 
 export interface IExamineLoginResponseCreds {
     homeserverUrl: string;
@@ -27,31 +29,31 @@ export interface IExamineLoginResponseCreds {
     freshLogin?: boolean;
 }
 
-export type ExamineLoginResponseListener = (response: any, credentials: IExamineLoginResponseCreds) => void;
-
-export enum SecurityLifecycle {
-    ExamineLoginResponse = "examine_login_response",
+export interface IExtendedMatrixClientCreds extends IExamineLoginResponseCreds {
+    secureBackupKey?: string;
 }
 
-export enum SecurityExtensionMethodName {
-    GetSecretStorageKey = "get_secret_storage_key",
-    SetupCryptoMethod = "SetupCryptoMethod"
-} 
+export interface IProvideCryptoSetupExtensions {
+    ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
+    GetSecretStorageKey() : string;
+}
+export interface IProvideOtherExtensions {
+    OtherMethod(): string
+}
 
-//export type SecurityExtensionMethod = GetSecretStorageKeyMethod | SetupCryptoMethod | SetupCrypto2Method
-export type SecurityExtensionResult = GetSecretStorageKeyResult | SetupCryptoResult | SetupCrypto2Result
-export type SecurityExtensionArgs = GetSecretStorageKeyArg | SetupCryptoArg | SetupCrypto2Method
+export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupExtensions {
+    ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
+        throw new Error("Method not implemented.");
+    }
+    GetSecretStorageKey(): string {
+        throw new Error("Method not implemented.");
+    }
+    // abstract GetSecretStorageKey(): string
+    // abstract ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
+}
 
-
-export type GetSecretStorageKeyArg = undefined;
-export type GetSecretStorageKeyResult = string;
-export type GetSecretStorageKeyMethod = () => GetSecretStorageKeyResult;
-
-export type SetupCryptoArg = {key: string};
-export type SetupCryptoResult  = string;
-export type SetupCryptoMethod  = (x: SetupCryptoArg) => SetupCryptoResult;
-
-export type SetupCrypto2Arg  = undefined;
-export type SetupCrypto2Result  = string;
-export type SetupCrypto2Method  = () => SetupCrypto2Result;
-
+export abstract class OtherExtensionsBase implements IProvideOtherExtensions {
+    OtherMethod(): string {
+        throw new Error("Method not implemented.");
+    }
+}
