@@ -163,6 +163,7 @@ describe("Proxied CryptoSetupExtensions and Experimental modules", () => {
                             examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {      
                                 credentials.secureBackupKey = "my proxied secure backup key";          
                             }
+                            SHOW_ENCRYPTION_SETUP_UI = false;
                         })()
                     }
                 }
@@ -182,12 +183,17 @@ describe("Proxied CryptoSetupExtensions and Experimental modules", () => {
         expect(result).toEqual("test 123");
     });
 
-    it("should return correct value for getSecretStorageKey for proxied modules", () => {
+    it("should override SHOW_ENCRYPTION_SETUP_UI setting from base class for proxied modules", () => {
+        let result = proxiedExtensions!.extensions!.cryptoSetup!.SHOW_ENCRYPTION_SETUP_UI;
+        expect(result).toBeFalsy();
+    });
+
+    it("should return correct value when calling getSecretStorageKey for proxied modules", () => {
         let result = proxiedExtensions!.extensions!.cryptoSetup!.getSecretStorageKey();
         expect(result).toEqual(Uint8Array.from([0xbb, 0xaa, 0xaa, 0xbb]));
     });
 
-    it("getDehydrationKeyCallback should return callback which resolves to correct value for proxied modules", async () => {
+    it("should return callback which resolves to correct value when calling getDehydrationKeyCallback for proxied modules", async () => {
         let callback = proxiedExtensions.extensions!.cryptoSetup!.getDehydrationKeyCallback() as any;
         const result = await callback( {} as SecretStorageKeyDescription, ()=>{});
         const expected = Uint8Array.from([0x0, 0x1, 0x2, 0x3]);

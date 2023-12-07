@@ -96,6 +96,9 @@ export interface IProvideCryptoSetupExtensions {
     catchAccessSecretStorageError(e: Error): void
     setupEncryptionNeeded(kind: SetupEncryptionKind): boolean
     getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null
+
+    /* settings */
+    SHOW_ENCRYPTION_SETUP_UI: boolean
 }
 
 
@@ -107,6 +110,7 @@ export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupEx
     abstract catchAccessSecretStorageError(e: Error): void 
     abstract setupEncryptionNeeded(kind: SetupEncryptionKind): boolean
     abstract getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null
+    SHOW_ENCRYPTION_SETUP_UI: boolean = true
 }
 
 // The default/empty crypto-extensions
