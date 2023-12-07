@@ -15,14 +15,17 @@ limitations under the License.
 */
 
 
-/* Extension methods */ 
+/* Extension method interfaces and their default implementations */ 
 import { 
+    DefaultCryptoSetupExtensions,
+    DefaultExperimentalExtensions,
     IProvideCryptoSetupExtensions, 
     IProvideExperimentalExtensions
 } from "./lifecycles/CryptoSetupExtensions";
 
 import { RuntimeModule } from "./RuntimeModule";
 
+/* The interfaces which will be exposed on modules and on ModuleRunner */ 
 export type AllExtensions = {
     cryptoSetup?: IProvideCryptoSetupExtensions,
     experimental?: IProvideExperimentalExtensions     
@@ -30,23 +33,42 @@ export type AllExtensions = {
 
 export class ProxiedExtensions {
 
+    /* TODO: Cache extension modules internally */
     public modules: RuntimeModule[] = new Array<RuntimeModule>()
 
     private extensionGetter =  (target: any, prop: string, receiver: any) => {
+        console.log(`Checking if we have matrix-react-sdk-module-api extensions for '${prop}'`);
         if(prop == "cryptoSetup"){                
-            let m = this.modules.find( m => {                   
+            const moduleWithImplementation = this.modules.find( m => {                   
                 let ext = m.extensions![prop];
                 return  ext != undefined
             });
-            return m?.extensions?.cryptoSetup;
+
+            if(moduleWithImplementation){
+                console.log(`Found module which provide ${prop} extensions`);
+                return moduleWithImplementation?.extensions?.cryptoSetup;
+            }
+            else {
+                console.log(`No modules with extensions for '${prop}' found. Returning default empty extension`);
+                return new DefaultCryptoSetupExtensions();
+            }            
         }
         if(prop == "experimental"){                
-            let m = this.modules.find( m => {                   
+            const moduleWithImplementation = this.modules.find( m => {                   
                 let ext = m.extensions![prop];
                 return  ext != undefined
             });
-            return m?.extensions?.experimental;
+
+            if(moduleWithImplementation){
+                console.log(`Found module which provide ${prop} extensions`);
+                return moduleWithImplementation?.extensions?.experimental;
+            }
+            else {
+                console.log(`No modules with extensions for '${prop}' found. Returning default empty extension`);
+                return new DefaultExperimentalExtensions();
+            }            
         }
+        console.log("Unknown extension!!")
     }
 
     private handler = {

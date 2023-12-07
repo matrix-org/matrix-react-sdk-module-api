@@ -20,9 +20,12 @@ import {
     CryptoSetupExtensionsBase,
     SetupEncryptionKind,
     ExperimentalExtensionsBase,
+    SecretStorageKeyDescription,
 } from "../../src/lifecycles/CryptoSetupExtensions";
 
 import { ProxiedExtensions } from "../../src/ProxiedExtensions";
+
+
 
 describe("Single module CryptoSetupExtensions", () => {
 
@@ -35,21 +38,23 @@ describe("Single module CryptoSetupExtensions", () => {
 
                 this.extensions = {
                     cryptoSetup: new (class extends CryptoSetupExtensionsBase {
-                        PersistCredentials(credentials: IExtendedMatrixClientCreds): void {
+                        persistCredentials(credentials: IExtendedMatrixClientCreds): void {
                         }
-                        CatchAccessSecretStorageError(e: Error): void {                            
+                        catchAccessSecretStorageError(e: Error): void {                            
                         }
-                        SetupEncryptionNeeded(kind: SetupEncryptionKind): boolean {
+                        setupEncryptionNeeded(kind: SetupEncryptionKind): boolean {
                             return true;
                         }
-                        async GetDehydrationKey(): Promise<Uint8Array> {
-                            return new Uint8Array([0x0, 0x1, 0x2, 0x3]);
+                        getSecretStorageKey(): Uint8Array | null {
+                            return new Uint8Array([0xaa, 0xbb, 0xbb, 0xaa])
                         }
-                        GetSecretStorageKey() {
-                            return "my secret storage key"
+                        createSecretStorageKey(): Uint8Array | null {
+                            return new Uint8Array([0xaa, 0xbb, 0xbb, 0xaa, 0xaa, 0xbb, 0xbb, 0xaa]);
+                        }                    
+                        getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null {
+                            return (_,__) => Promise.resolve(new Uint8Array([0x0, 0x1, 0x2, 0x3]) );
                         }
-        
-                        ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {      
+                        examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {      
                             credentials.secureBackupKey = "my secure backup key";          
                         }
                     })()
@@ -58,14 +63,16 @@ describe("Single module CryptoSetupExtensions", () => {
         })();
     });
 
-    it("should return correct value for GetSecretStorageKey for single module", () => {
-        let result = module.extensions!.cryptoSetup!.GetSecretStorageKey();
-        expect(result).toEqual("my secret storage key");
+    it("should return correct value for getSecretStorageKey for single module", () => {
+        let result = module.extensions!.cryptoSetup!.getSecretStorageKey();
+        expect(result).toEqual(Uint8Array.from([0xaa,0xbb,0xbb,0xaa]));
     });
 
-    it("should return correct value for GetDehyrationKey for single module", async () => {
-        let result = await module.extensions!.cryptoSetup!.GetDehydrationKey();
-        expect(result).toEqual(new Uint8Array([0x0, 0x1, 0x2, 0x3]));
+    it("getDehydrationKeyCallback should return callback which resolves to correct value for single module", async () => {
+        let callback = module.extensions!.cryptoSetup!.getDehydrationKeyCallback() as any;
+        const result = await callback( {} as SecretStorageKeyDescription, ()=>{});
+        const expected = Uint8Array.from([0x0, 0x1, 0x2, 0x3]);
+        expect(result).toEqual(expected);
     });
 
     it("should allow adding secure backup key to login response for single module", () => {
@@ -82,13 +89,26 @@ describe("Single module CryptoSetupExtensions", () => {
             secureBackupKey?: string | undefined = ""            
         });
 
-        module.extensions!.cryptoSetup!.ExamineLoginResponse({sub: "my-sub"}, credentials );
+        module.extensions!.cryptoSetup!.examineLoginResponse({sub: "my-sub"}, credentials );
         expect(credentials.secureBackupKey).toEqual("my secure backup key");
     });
 });
 
+describe("Module proxy with no modules", () => {
 
-describe("Proxied modules CryptoSetupExtensions", () => {
+    let proxiedExtensions: ProxiedExtensions;
+
+    beforeAll(() => {
+        proxiedExtensions = new ProxiedExtensions([]);
+    });
+
+    it("should return correct value for getSecretStorageKey for single module", () => {
+        // let result = module.extensions!.cryptoSetup!.getSecretStorageKey();
+        // expect(result).toEqual(Uint8Array.from([0xaa,0xbb,0xbb,0xaa]));
+    });
+});
+
+describe("Proxied CryptoSetupExtensions and Experimental modules", () => {
 
     let proxiedExtensions: ProxiedExtensions;
 
@@ -109,7 +129,7 @@ describe("Proxied modules CryptoSetupExtensions", () => {
                     // construct a module with ExperimentalExtensions exposed    
                     this.extensions = {
                         experimental: new (class extends ExperimentalExtensionsBase {
-                            ExperimentalMethod(arg: any): string {
+                            experimentalMethod(arg: any): string {
                                 return arg;
                             }
                         })()
@@ -124,25 +144,23 @@ describe("Proxied modules CryptoSetupExtensions", () => {
                     // construct a module with CryptoSetupExtensions exposed    
                     this.extensions = {
                         cryptoSetup: new (class extends CryptoSetupExtensionsBase {
-
-                            PersistCredentials(credentials: IExtendedMatrixClientCreds): void {
+                            persistCredentials(credentials: IExtendedMatrixClientCreds): void {
                             }
-
-                            CatchAccessSecretStorageError(e: Error): void {                            
+                            catchAccessSecretStorageError(e: Error): void {                            
                             }
-                            SetupEncryptionNeeded(kind: SetupEncryptionKind): boolean {
+                            setupEncryptionNeeded(kind: SetupEncryptionKind): boolean {
                                 return true;
                             }
-
-                            async GetDehydrationKey(): Promise<Uint8Array> {
-                                return new Uint8Array([0x4, 0x3, 0x2, 0x1]);
+                            getSecretStorageKey(): Uint8Array | null {
+                                return new Uint8Array([0xbb, 0xaa, 0xaa, 0xbb])
                             }
-
-                            GetSecretStorageKey() {
-                                return "my proxied secret storage key"
+                            createSecretStorageKey(): Uint8Array | null {                               
+                                return null;
+                            }                        
+                            getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null {
+                                return (_,__) => Promise.resolve(new Uint8Array([0x0, 0x1, 0x2, 0x3]) );
                             }
-            
-                            ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {      
+                            examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {      
                                 credentials.secureBackupKey = "my proxied secure backup key";          
                             }
                         })()
@@ -153,25 +171,27 @@ describe("Proxied modules CryptoSetupExtensions", () => {
         proxiedExtensions = new ProxiedExtensions(modules);
     });
 
-    it("should not throw calling ExperimentalMethod without arguments for proxied modules", () => {
+    it("should not throw calling experimentalMethod without arguments for proxied modules", () => {
 
-        let t = () => proxiedExtensions!.extensions!.experimental!.ExperimentalMethod();    
+        let t = () => proxiedExtensions!.extensions!.experimental!.experimentalMethod();    
         expect(t).not.toThrow();    
     });
 
-    it("should return correct value for ExperimentalMethod for proxied modules", () => {
-        let result = proxiedExtensions!.extensions!.experimental!.ExperimentalMethod("test 123");
+    it("should return correct value for experimentalMethod for proxied modules", () => {
+        let result = proxiedExtensions!.extensions!.experimental!.experimentalMethod("test 123");
         expect(result).toEqual("test 123");
     });
 
-    it("should return correct value for GetSecretStorageKey for proxied modules", () => {
-        let result = proxiedExtensions!.extensions!.cryptoSetup!.GetSecretStorageKey();
-        expect(result).toEqual("my proxied secret storage key");
+    it("should return correct value for getSecretStorageKey for proxied modules", () => {
+        let result = proxiedExtensions!.extensions!.cryptoSetup!.getSecretStorageKey();
+        expect(result).toEqual(Uint8Array.from([0xbb, 0xaa, 0xaa, 0xbb]));
     });
 
-    it("should return correct value for GetDehyrationKey for proxied modules", async () => {
-        let result = await proxiedExtensions.extensions!.cryptoSetup!.GetDehydrationKey();
-        expect(result).toEqual(new Uint8Array([0x4, 0x3, 0x2, 0x1]));
+    it("getDehydrationKeyCallback should return callback which resolves to correct value for proxied modules", async () => {
+        let callback = proxiedExtensions.extensions!.cryptoSetup!.getDehydrationKeyCallback() as any;
+        const result = await callback( {} as SecretStorageKeyDescription, ()=>{});
+        const expected = Uint8Array.from([0x0, 0x1, 0x2, 0x3]);
+        expect(result).toEqual(expected);
     });
 
     it("should allow adding secure backup key to login response for proxied modules", () => {
@@ -188,48 +208,48 @@ describe("Proxied modules CryptoSetupExtensions", () => {
             secureBackupKey?: string | undefined = ""            
         });
 
-        proxiedExtensions.extensions.cryptoSetup!.ExamineLoginResponse({secureBackupKey: "my key"}, credentials );
+        proxiedExtensions.extensions.cryptoSetup!.examineLoginResponse({secureBackupKey: "my key"}, credentials );
         expect(credentials.secureBackupKey).toEqual("my proxied secure backup key");
     });
 
-    it("proxy must throw when no implementation in modules", () => {
+    // it("proxy must throw when no implementation in modules", () => {
 
-        var modules = [
+    //     var modules = [
 
-            new (class extends RuntimeModule {
-                public constructor() {
-                    super(undefined as any);
+    //         new (class extends RuntimeModule {
+    //             public constructor() {
+    //                 super(undefined as any);
     
-                    this.extensions = {
-                        cryptoSetup: undefined
-                    }    
-                }
-            })(),
+    //                 this.extensions = {
+    //                     cryptoSetup: undefined
+    //                 }    
+    //             }
+    //         })(),
 
-            new (class extends RuntimeModule {
-                public constructor() {
-                    super(undefined as any);
+    //         new (class extends RuntimeModule {
+    //             public constructor() {
+    //                 super(undefined as any);
     
-                    this.extensions = {
-                        cryptoSetup: undefined
-                    }
-                }
-            })()
-        ];
+    //                 this.extensions = {
+    //                     cryptoSetup: undefined
+    //                 }
+    //             }
+    //         })()
+    //     ];
 
-        var proxiedExtensions = new ProxiedExtensions(modules);
+    //     var proxiedExtensions = new ProxiedExtensions(modules);
 
-        let t = () => proxiedExtensions.extensions.cryptoSetup!.GetSecretStorageKey();    
-        expect(t).toThrow(Error);
+    //     let t = () => proxiedExtensions.extensions.cryptoSetup!.getSecretStorageKey();    
+    //     expect(t).toThrow(Error);
     
-    });
+    // });
     
-    it("proxy must throw when we have no modules", () => {
+    // it("proxy must throw when we have no modules", () => {
 
-        var modules = new Array<RuntimeModule>();
-        var proxiedExtensions = new ProxiedExtensions(modules);
+    //     var modules = new Array<RuntimeModule>();
+    //     var proxiedExtensions = new ProxiedExtensions(modules);
 
-        let t = () => proxiedExtensions.extensions.cryptoSetup!.GetSecretStorageKey();    
-        expect(t).toThrow(Error);    
-    });
+    //     let t = () => proxiedExtensions.extensions.cryptoSetup!.GetSecretStorageKey();    
+    //     expect(t).toThrow(Error);    
+    // });
 });

@@ -13,6 +13,53 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+/*
+* Types copied (and renamed) from matrix-js-sdk
+* 
+*/
+
+export interface SecretStorageKeyDescriptionCommon {
+    /** A human-readable name for this key. */
+    // XXX: according to the spec, this is optional
+    name: string;
+
+    /** The encryption algorithm used with this key. */
+    algorithm: string;
+
+    /** Information for deriving this key from a passphrase. */
+    // XXX: according to the spec, this is optional
+    passphrase: PassphraseInfo;
+}
+
+export interface SecretStorageKeyDescriptionAesV1 extends SecretStorageKeyDescriptionCommon {
+    // XXX: strictly speaking, we should be able to enforce the algorithm here. But
+    //   this interface ends up being incorrectly used where other algorithms are in use (notably
+    //   in device-dehydration support), and unpicking that is too much like hard work
+    //   at the moment.
+    // algorithm: "m.secret_storage.v1.aes-hmac-sha2";
+
+    /** The 16-byte AES initialization vector, encoded as base64. */
+    iv: string;
+
+    /** The MAC of the result of encrypting 32 bytes of 0, encoded as base64. */
+    mac: string;
+}
+
+export type SecretStorageKeyDescription = SecretStorageKeyDescriptionAesV1;
+
+export interface PassphraseInfo {
+    /** The algorithm to be used to derive the key. */
+    algorithm: "m.pbkdf2";
+
+    /** The number of PBKDF2 iterations to use. */
+    iterations: number;
+
+    /** The salt to be used for PBKDF2. */
+    salt: string;
+
+    /** The number of bits to generate. Defaults to 256. */
+    bits?: number;
+}
 
 /*
 * Types copied (and renamed) from matrix-react-sdk
@@ -42,30 +89,68 @@ export interface IExtendedMatrixClientCreds extends IExamineLoginResponseCreds {
 }
 
 export interface IProvideCryptoSetupExtensions {
-    ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
-    PersistCredentials(credentials: IExtendedMatrixClientCreds): void
-    GetSecretStorageKey() : string;
-    CatchAccessSecretStorageError(e: Error): void
-    SetupEncryptionNeeded(kind: SetupEncryptionKind): boolean
-    GetDehydrationKey(): Promise<Uint8Array>;
+    examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
+    persistCredentials(credentials: IExtendedMatrixClientCreds): void
+    getSecretStorageKey() : Uint8Array | null;
+    createSecretStorageKey() : Uint8Array | null;
+    catchAccessSecretStorageError(e: Error): void
+    setupEncryptionNeeded(kind: SetupEncryptionKind): boolean
+    getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null
 }
 
 
 export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupExtensions {
-    abstract ExamineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
-    abstract PersistCredentials(credentials: IExtendedMatrixClientCreds): void 
-    abstract GetSecretStorageKey(): string
-    abstract CatchAccessSecretStorageError(e: Error): void 
-    abstract SetupEncryptionNeeded(kind: SetupEncryptionKind): boolean
-    abstract GetDehydrationKey(): Promise<Uint8Array>
+    abstract examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
+    abstract persistCredentials(credentials: IExtendedMatrixClientCreds): void 
+    abstract getSecretStorageKey(): Uint8Array | null
+    abstract createSecretStorageKey(): Uint8Array | null
+    abstract catchAccessSecretStorageError(e: Error): void 
+    abstract setupEncryptionNeeded(kind: SetupEncryptionKind): boolean
+    abstract getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null
+}
+
+// The default/empty crypto-extensions
+// Will be called by the proxy if none of the modules has an implementaion of IProvideCryptoSetupExtensions
+export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase{
+    examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
+        console.log("Default empty examineLoginResponse() => void")
+    }
+    persistCredentials(credentials: IExtendedMatrixClientCreds): void {
+        console.log("Default empty persistCredentials() => void")
+    }
+    getSecretStorageKey(): Uint8Array | null {
+        console.log("Default empty getSecretStorageKey() => null")
+        return null;
+    }
+    createSecretStorageKey(): Uint8Array | null {
+        console.log("Default empty createSecretStorageKey() => null")
+        return null;
+    }
+    catchAccessSecretStorageError(e: Error): void {
+        console.log("Default catchAccessSecretStorageError() => void")        
+    }
+    setupEncryptionNeeded(kind: SetupEncryptionKind): boolean {
+        console.log("Default setupEncryptionNeeded() => false")        
+        return false;
+    }
+
+    getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null {
+        console.log("Default empty getDehydrationKeyCallback() => null")        
+        return null;
+    }
 }
 
 //
 // Mostly for test. To ensure we handle more than one module having extensions 
 // 
 export interface IProvideExperimentalExtensions {
-    ExperimentalMethod(args?: any): any
+    experimentalMethod(args?: any): any
 }
 export abstract class ExperimentalExtensionsBase implements IProvideExperimentalExtensions {
-    abstract ExperimentalMethod(args?: any): any
+    abstract experimentalMethod(args?: any): any
+}
+
+export class DefaultExperimentalExtensions extends ExperimentalExtensionsBase {
+    experimentalMethod(args?: any): void {        
+    }
 }

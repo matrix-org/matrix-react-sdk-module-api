@@ -1,10 +1,10 @@
 {
     "name": "@matrix-org/react-sdk-module-api",
-    "version": "2.2.1",
+    "version": "2.3.0-wr-taj-6",
     "description": "Module API surface for matrix-react-sdk",
     "main": "lib/index.js",
     "types": "lib/index.d.ts",
-    "repository": "git@github.com:matrix-org/matrix-react-sdk-module-api.git",
+    "repository": "git@github.com:verji/matrix-react-sdk-module-api.git",
     "author": "The Matrix.org Foundation C.I.C.",
     "license": "Apache-2.0",
     "files": [
