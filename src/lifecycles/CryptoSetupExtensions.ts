@@ -88,34 +88,46 @@ export interface IExtendedMatrixClientCreds extends IExamineLoginResponseCreds {
     secureBackupKey?: string;
 }
 
+
+export interface IProvideCryptoSetupStore{
+    getInstance: ()=>ISetupEncryptionStoreProjection;
+}
+
+export interface ISetupEncryptionStoreProjection{
+    usePassPhrase(): Promise<void>;
+}
+
 export interface IProvideCryptoSetupExtensions {
     examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
     persistCredentials(credentials: IExtendedMatrixClientCreds): void
     getSecretStorageKey() : Uint8Array | null;
     createSecretStorageKey() : Uint8Array | null;
     catchAccessSecretStorageError(e: Error): void
-    setupEncryptionNeeded(kind: SetupEncryptionKind): boolean
+    setupEncryptionNeeded: (args: SetupArgs)=> boolean 
     getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null
 
-    /* settings */
     SHOW_ENCRYPTION_SETUP_UI: boolean
 }
 
-
-export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupExtensions {
+export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupExtensions{
     abstract examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
     abstract persistCredentials(credentials: IExtendedMatrixClientCreds): void 
     abstract getSecretStorageKey(): Uint8Array | null
     abstract createSecretStorageKey(): Uint8Array | null
     abstract catchAccessSecretStorageError(e: Error): void 
-    abstract setupEncryptionNeeded(kind: SetupEncryptionKind): boolean
+    abstract setupEncryptionNeeded(args: SetupArgs): boolean 
     abstract getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null
-    SHOW_ENCRYPTION_SETUP_UI: boolean = true
+    SHOW_ENCRYPTION_SETUP_UI: boolean = true;
+}
+// Define an argument interface to help enforce mandatory arguments
+export interface SetupArgs {
+    kind: SetupEncryptionKind, 
+    storeProvider: IProvideCryptoSetupStore
 }
 
 // The default/empty crypto-extensions
 // Will be called by the proxy if none of the modules has an implementaion of IProvideCryptoSetupExtensions
-export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase{
+export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase {
     examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
         console.log("Default empty examineLoginResponse() => void")
     }
@@ -133,7 +145,7 @@ export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase{
     catchAccessSecretStorageError(e: Error): void {
         console.log("Default catchAccessSecretStorageError() => void")        
     }
-    setupEncryptionNeeded(kind: SetupEncryptionKind): boolean {
+    setupEncryptionNeeded(args: SetupArgs): boolean {
         console.log("Default setupEncryptionNeeded() => false")        
         return false;
     }
@@ -142,6 +154,8 @@ export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase{
         console.log("Default empty getDehydrationKeyCallback() => null")        
         return null;
     }
+    SHOW_ENCRYPTION_SETUP_UI: boolean = true;
+
 }
 
 //
@@ -155,6 +169,7 @@ export abstract class ExperimentalExtensionsBase implements IProvideExperimental
 }
 
 export class DefaultExperimentalExtensions extends ExperimentalExtensionsBase {
-    experimentalMethod(args?: any): void {        
+    experimentalMethod(args?: any): any {    
+        return null;    
     }
 }

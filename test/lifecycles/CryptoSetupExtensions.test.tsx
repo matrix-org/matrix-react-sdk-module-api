@@ -21,6 +21,7 @@ import {
     SetupEncryptionKind,
     ExperimentalExtensionsBase,
     SecretStorageKeyDescription,
+    SetupArgs,
 } from "../../src/lifecycles/CryptoSetupExtensions";
 
 import { ProxiedExtensions } from "../../src/ProxiedExtensions";
@@ -42,7 +43,7 @@ describe("Single module CryptoSetupExtensions", () => {
                         }
                         catchAccessSecretStorageError(e: Error): void {                            
                         }
-                        setupEncryptionNeeded(kind: SetupEncryptionKind): boolean {
+                        setupEncryptionNeeded(args: SetupArgs): boolean {
                             return true;
                         }
                         getSecretStorageKey(): Uint8Array | null {
@@ -148,7 +149,7 @@ describe("Proxied CryptoSetupExtensions and Experimental modules", () => {
                             }
                             catchAccessSecretStorageError(e: Error): void {                            
                             }
-                            setupEncryptionNeeded(kind: SetupEncryptionKind): boolean {
+                            setupEncryptionNeeded(args: SetupArgs): boolean {
                                 return true;
                             }
                             getSecretStorageKey(): Uint8Array | null {
