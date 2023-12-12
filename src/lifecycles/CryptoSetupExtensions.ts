@@ -128,6 +128,7 @@ export interface SetupArgs {
 // The default/empty crypto-extensions
 // Will be called by the proxy if none of the modules has an implementaion of IProvideCryptoSetupExtensions
 export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase {
+
     examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
         console.log("Default empty examineLoginResponse() => void")
     }
@@ -156,20 +157,4 @@ export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase {
     }
     SHOW_ENCRYPTION_SETUP_UI: boolean = true;
 
-}
-
-//
-// Mostly for test. To ensure we handle more than one module having extensions 
-// 
-export interface IProvideExperimentalExtensions {
-    experimentalMethod(args?: any): any
-}
-export abstract class ExperimentalExtensionsBase implements IProvideExperimentalExtensions {
-    abstract experimentalMethod(args?: any): any
-}
-
-export class DefaultExperimentalExtensions extends ExperimentalExtensionsBase {
-    experimentalMethod(args?: any): any {    
-        return null;    
-    }
 }

@@ -19,7 +19,9 @@ import { EventEmitter } from "events";
 import { ModuleApi } from "./ModuleApi";
 import { PlainSubstitution } from "./types/translations";
 
-import { AllExtensions } from "./ProxiedExtensions";
+import { AllExtensions } from "./types/extensions";
+import { DefaultCryptoSetupExtensions } from "./lifecycles/CryptoSetupExtensions";
+import { DefaultExperimentalExtensions } from "./lifecycles/ExperimentalExtensions";
 
 // TODO: Type the event emitter with AnyLifecycle (extract TypedEventEmitter from js-sdk somehow?)
 // See https://github.com/matrix-org/matrix-react-sdk-module-api/issues/4
@@ -31,15 +33,15 @@ import { AllExtensions } from "./ProxiedExtensions";
     
 export abstract class RuntimeModule extends EventEmitter {
 
-    public extensions?: AllExtensions
+    public extensions?: AllExtensions = {
+        cryptoSetup: new DefaultCryptoSetupExtensions(),
+        experimental: new DefaultExperimentalExtensions()
+    }
+
+    moduleName: string = RuntimeModule.name; 
 
     protected constructor(protected readonly moduleApi: ModuleApi) {
         super();
-
-        this.extensions = {
-            cryptoSetup: undefined,
-            experimental: undefined
-        }
     }
 
     /**

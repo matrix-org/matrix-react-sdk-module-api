@@ -16,72 +16,72 @@ limitations under the License.
 
 
 /* Extension method interfaces and their default implementations */ 
-import { 
-    DefaultCryptoSetupExtensions,
-    DefaultExperimentalExtensions,
-    IProvideCryptoSetupExtensions, 
-    IProvideExperimentalExtensions
-} from "./lifecycles/CryptoSetupExtensions";
+// import { 
+//     DefaultCryptoSetupExtensions,
+//     DefaultExperimentalExtensions,
+//     IProvideCryptoSetupExtensions, 
+//     IProvideExperimentalExtensions
+// } from "./lifecycles/CryptoSetupExtensions";
 
-import { RuntimeModule } from "./RuntimeModule";
+// import { RuntimeModule } from "./RuntimeModule";
 
-/* The interfaces which will be exposed on modules and on ModuleRunner */ 
-export type AllExtensions = {
-    cryptoSetup?: IProvideCryptoSetupExtensions,
-    experimental?: IProvideExperimentalExtensions     
-}
+// /* The interfaces which will be exposed on modules and on ModuleRunner */ 
+// export type AllExtensions = {
+//     cryptoSetup: IProvideCryptoSetupExtensions,
+//     experimental: IProvideExperimentalExtensions     
+// }
 
-export class ProxiedExtensions {
+// export class ProxiedExtensions {
 
-    /* TODO: Cache extension modules internally */
-    public modules: RuntimeModule[] = new Array<RuntimeModule>()
+//     /* TODO: Cache extension modules internally */
+//     public modules: RuntimeModule[] = new Array<RuntimeModule>()
 
-    private extensionGetter =  (target: any, prop: string, receiver: any) => {
-        console.log(`Checking if we have matrix-react-sdk-module-api extensions for '${prop}'`);
-        if(prop == "cryptoSetup"){                
-            const moduleWithImplementation = this.modules.find( m => {                   
-                let ext = m.extensions![prop];
-                return  ext != undefined
-            });
+//     private extensionGetter =  (target: any, prop: string, receiver: any) => {
+//         console.log(`Checking if we have matrix-react-sdk-module-api extensions for '${prop}'`);
+//         if(prop == "cryptoSetup"){                
+//             const moduleWithImplementation = this.modules.find( m => {                   
+//                 let ext = m.extensions![prop];
+//                 return  ext != undefined
+//             });
 
-            if(moduleWithImplementation){
-                console.log(`Found module which provide ${prop} extensions`);
-                return moduleWithImplementation?.extensions?.cryptoSetup;
-            }
-            else {
-                console.log(`No modules with extensions for '${prop}' found. Returning default empty extension`);
-                return new DefaultCryptoSetupExtensions();
-            }            
-        }
-        if(prop == "experimental"){                
-            const moduleWithImplementation = this.modules.find( m => {                   
-                let ext = m.extensions![prop];
-                return  ext != undefined
-            });
+//             if(moduleWithImplementation){
+//                 console.log(`Found module which provide ${prop} extensions`);
+//                 return moduleWithImplementation?.extensions?.cryptoSetup;
+//             }
+//             else {
+//                 console.log(`No modules with extensions for '${prop}' found. Returning default empty extension`);
+//                 return new DefaultCryptoSetupExtensions();
+//             }            
+//         }
+//         if(prop == "experimental"){                
+//             const moduleWithImplementation = this.modules.find( m => {                   
+//                 let ext = m.extensions![prop];
+//                 return  ext != undefined
+//             });
 
-            if(moduleWithImplementation){
-                console.log(`Found module which provide ${prop} extensions`);
-                return moduleWithImplementation?.extensions?.experimental;
-            }
-            else {
-                console.log(`No modules with extensions for '${prop}' found. Returning default empty extension`);
-                return new DefaultExperimentalExtensions();
-            }            
-        }
-        console.log("Unknown extension!!")
-    }
+//             if(moduleWithImplementation){
+//                 console.log(`Found module which provide ${prop} extensions`);
+//                 return moduleWithImplementation?.extensions?.experimental;
+//             }
+//             else {
+//                 console.log(`No modules with extensions for '${prop}' found. Returning default empty extension`);
+//                 return new DefaultExperimentalExtensions();
+//             }            
+//         }
+//         console.log("Unknown extension!!")
+//     }
 
-    private handler = {
-        get: this.extensionGetter
-    }
+//     private handler = {
+//         get: this.extensionGetter
+//     }
   
-    public extensions: AllExtensions = new Proxy(
-        {        
-            cryptoSetup: undefined,
-            other: undefined
-        }, this.handler);
+//     public extensions: AllExtensions = new Proxy(
+//         {        
+//             cryptoSetup: undefined,
+//             other: undefined
+//         }, this.handler);
 
-    constructor(modules: RuntimeModule[]){
-        this.modules = modules;
-    }
-}
+//     constructor(modules: RuntimeModule[]){
+//         this.modules = modules;
+//     }
+// }
