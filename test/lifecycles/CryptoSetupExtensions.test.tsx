@@ -19,7 +19,7 @@ import {
     IExtendedMatrixClientCreds,
     CryptoSetupExtensionsBase,
     SecretStorageKeyDescription,
-    SetupArgs,
+    CryptoSetupArgs,
     IProvideCryptoSetupExtensions,
     DefaultCryptoSetupExtensions,
 } from "../../src/lifecycles/CryptoSetupExtensions";
@@ -42,22 +42,22 @@ describe("Defaults", () => {
         })();
     });
 
-    it("should have default value for SHOW_ENCRYPTION_SETUP_UI", () => {
-        let result = module.extensions!.cryptoSetup.SHOW_ENCRYPTION_SETUP_UI;
+    it("returns default value for SHOW_ENCRYPTION_SETUP_UI", () => {
+        let result = module.extensions!.cryptoSetup!.SHOW_ENCRYPTION_SETUP_UI;
         expect(result).toBeTruthy();
     });
 
-    it("should return default value for getSecretStorageKey()", () => {
+    it("returns default value for getSecretStorageKey()", () => {
         let result = module.extensions!.cryptoSetup!.getSecretStorageKey();
         expect(result).toEqual(null);
     });
 
-    it("should return null when calling getDehydrationKeyCallback", async () => {
+    it("returns default value of null instead of callback", async () => {
         let callback = module.extensions!.cryptoSetup!.getDehydrationKeyCallback() as any;
         expect(callback).toBeNull();
     });
 
-    it("should not throw when calling default examineLoginResponse()", () => {
+    it("must not throw when calling default examineLoginResponse()", () => {
         var credentials = new (class implements IExtendedMatrixClientCreds {
             identityServerUrl?: string | undefined;
             userId: string = ""
@@ -92,7 +92,7 @@ describe("Custom CryptoSetupExtensions", () => {
                         }
                         catchAccessSecretStorageError(e: Error): void {                            
                         }
-                        setupEncryptionNeeded(args: SetupArgs): boolean {
+                        setupEncryptionNeeded(args: CryptoSetupArgs): boolean {
                             return true;
                         }
                         getSecretStorageKey(): Uint8Array | null {
@@ -108,31 +108,30 @@ describe("Custom CryptoSetupExtensions", () => {
                             credentials.secureBackupKey = "my secure backup key";          
                         }
                         SHOW_ENCRYPTION_SETUP_UI: boolean = false
-                    })(),
-                    experimental: {} as IProvideExperimentalExtensions
+                    })()
                 }
             }
         })();
     });
 
-    it("should override SHOW_ENCRYPTION_SETUP_UI custom setting from base class", () => {
-        let result = module.extensions!.cryptoSetup.SHOW_ENCRYPTION_SETUP_UI;
+    it("overrides SHOW_ENCRYPTION_SETUP_UI custom setting from base class", () => {
+        let result = module.extensions!.cryptoSetup!.SHOW_ENCRYPTION_SETUP_UI;
         expect(result).toBeFalsy();
     });
 
-    it("should return custom value when calling getSecretStorageKey", () => {
+    it("returns custom value when calling getSecretStorageKey", () => {
         let result = module.extensions!.cryptoSetup!.getSecretStorageKey();
         expect(result).toEqual(Uint8Array.from([0xaa, 0xbb, 0xbb, 0xaa]));
     });
 
-    it("should return callback which resolves to custom value when calling getDehydrationKeyCallback", async () => {
+    it("returns callback which resolves to custom value when calling getDehydrationKeyCallback", async () => {
         let callback = module.extensions!.cryptoSetup!.getDehydrationKeyCallback() as any;
         const result = await callback( {} as SecretStorageKeyDescription, ()=>{});
         const expected = Uint8Array.from([0x0, 0x1, 0x2, 0x3]);
         expect(result).toEqual(expected);
     });
 
-    it("should allow adding secure backup key to login response for proxied modules", () => {
+    it("must allow adding secure backup key to login response", () => {
         var credentials = new (class implements IExtendedMatrixClientCreds {
             identityServerUrl?: string | undefined;
             userId: string = ""
@@ -174,13 +173,13 @@ describe("Custom ExperimentalExtensions", () => {
         })();
     });
 
-    it("should not throw calling experimentalMethod without arguments", () => {
+    it("must not throw calling experimentalMethod without arguments", () => {
 
-        let t = () => module.extensions!.experimental.experimentalMethod();    
+        let t = () => module.extensions!.experimental!.experimentalMethod();    
         expect(t).not.toThrow();    
     });
 
-    it("should return correct custom value for experimentalMethod", () => {
+    it("must return correct custom value for experimentalMethod", () => {
         let result = module.extensions!.experimental!.experimentalMethod("test 123");
         expect(result).toEqual("test 123");
     });

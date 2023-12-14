@@ -33,12 +33,8 @@ import { DefaultExperimentalExtensions } from "./lifecycles/ExperimentalExtensio
     
 export abstract class RuntimeModule extends EventEmitter {
 
-    public extensions?: AllExtensions = {
-        cryptoSetup: new DefaultCryptoSetupExtensions(),
-        experimental: new DefaultExperimentalExtensions()
-    }
-
-    moduleName: string = RuntimeModule.name; 
+    public extensions?: AllExtensions;
+    public moduleName: string = RuntimeModule.name; 
 
     protected constructor(protected readonly moduleApi: ModuleApi) {
         super();
