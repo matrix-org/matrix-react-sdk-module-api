@@ -14,8 +14,7 @@ limitations under the License.
 */
 
 /*
-* Types copied (and renamed) from matrix-js-sdk
-* 
+* Types copied (and renamed) from matrix-js-sdk 
 */
 
 export interface SecretStorageKeyDescriptionCommon {

@@ -20,8 +20,6 @@ import { ModuleApi } from "./ModuleApi";
 import { PlainSubstitution } from "./types/translations";
 
 import { AllExtensions } from "./types/extensions";
-import { DefaultCryptoSetupExtensions } from "./lifecycles/CryptoSetupExtensions";
-import { DefaultExperimentalExtensions } from "./lifecycles/ExperimentalExtensions";
 
 // TODO: Type the event emitter with AnyLifecycle (extract TypedEventEmitter from js-sdk somehow?)
 // See https://github.com/matrix-org/matrix-react-sdk-module-api/issues/4
