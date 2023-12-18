@@ -88,40 +88,39 @@ export interface IExtendedMatrixClientCreds extends IExamineLoginResponseCreds {
 }
 
 export interface IProvideCryptoSetupStore{
-    getInstance: ()=>ISetupEncryptionStoreProjection;
+    getInstance: () => ISetupEncryptionStoreProjection;
 }
 
 export interface ISetupEncryptionStoreProjection{
     usePassPhrase(): Promise<void>;
 }
 
-export interface IProvideCryptoSetupExtensions {
-    examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
-    persistCredentials(credentials: IExtendedMatrixClientCreds): void
-    getSecretStorageKey() : Uint8Array | null;
-    createSecretStorageKey() : Uint8Array | null;
-    catchAccessSecretStorageError(e: Error): void
-    setupEncryptionNeeded: (args: CryptoSetupArgs)=> boolean 
-    getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null
+export protected interface IProvideCryptoSetupExtensions {
+    examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void;
+    persistCredentials(credentials: IExtendedMatrixClientCreds): void;
+    getSecretStorageKey(): Uint8Array | null;
+    createSecretStorageKey(): Uint8Array | null;
+    catchAccessSecretStorageError(e: Error): void;
+    setupEncryptionNeeded: (args: CryptoSetupArgs) => boolean;
 
-    SHOW_ENCRYPTION_SETUP_UI: boolean
+    SHOW_ENCRYPTION_SETUP_UI: boolean;
 }
 
-export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupExtensions{
-    abstract examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void
-    abstract persistCredentials(credentials: IExtendedMatrixClientCreds): void 
-    abstract getSecretStorageKey(): Uint8Array | null
-    abstract createSecretStorageKey(): Uint8Array | null
-    abstract catchAccessSecretStorageError(e: Error): void 
-    abstract setupEncryptionNeeded(args: CryptoSetupArgs): boolean 
-    abstract getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null
-    abstract SHOW_ENCRYPTION_SETUP_UI: boolean;
+export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupExtensions {
+    public abstract examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void;
+    public abstract persistCredentials(credentials: IExtendedMatrixClientCreds): void;
+    public abstract getSecretStorageKey(): Uint8Array | null;
+    public abstract createSecretStorageKey(): Uint8Array | null;
+    public abstract catchAccessSecretStorageError(e: Error): void;
+    public abstract setupEncryptionNeeded(args: CryptoSetupArgs): boolean;
+    public abstract getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null;
+    public abstract SHOW_ENCRYPTION_SETUP_UI: boolean;
 }
 
 /* Define an interface for setupEncryptionNeeded to help enforce mandatory arguments */
 export interface CryptoSetupArgs {
-    kind: SetupEncryptionKind, 
-    storeProvider: IProvideCryptoSetupStore
+    kind: SetupEncryptionKind; 
+    storeProvider: IProvideCryptoSetupStore;
 }
 
 /**
@@ -132,32 +131,36 @@ export interface CryptoSetupArgs {
  * */
 export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase {
 
-    SHOW_ENCRYPTION_SETUP_UI: boolean = true;
+    public SHOW_ENCRYPTION_SETUP_UI = true;
 
-    examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
-        console.log("Default empty examineLoginResponse() => void")
+    public examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
+        console.log("Default empty examineLoginResponse() => void");
     }
-    persistCredentials(credentials: IExtendedMatrixClientCreds): void {
-        console.log("Default empty persistCredentials() => void")
+    public persistCredentials(credentials: IExtendedMatrixClientCreds): void {
+        console.log("Default empty persistCredentials() => void");
     }
-    getSecretStorageKey(): Uint8Array | null {
-        console.log("Default empty getSecretStorageKey() => null")
+
+    public getSecretStorageKey(): Uint8Array | null {
+        console.log("Default empty getSecretStorageKey() => null");
         return null;
     }
-    createSecretStorageKey(): Uint8Array | null {
-        console.log("Default empty createSecretStorageKey() => null")
+
+    public createSecretStorageKey(): Uint8Array | null {
+        console.log("Default empty createSecretStorageKey() => null");
         return null;
     }
-    catchAccessSecretStorageError(e: Error): void {
-        console.log("Default catchAccessSecretStorageError() => void")        
+
+    public catchAccessSecretStorageError(e: Error): void {
+        console.log("Default catchAccessSecretStorageError() => void");
     }
-    setupEncryptionNeeded(args: CryptoSetupArgs): boolean {
-        console.log("Default setupEncryptionNeeded() => false")        
+
+    public setupEncryptionNeeded(args: CryptoSetupArgs): boolean {
+        console.log("Default setupEncryptionNeeded() => false");
         return false;
     }
 
-    getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null {
-        console.log("Default empty getDehydrationKeyCallback() => null")        
+    public getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null {
+        console.log("Default empty getDehydrationKeyCallback() => null");
         return null;
     }
 }
