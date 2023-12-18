@@ -23,10 +23,9 @@ import {
     IProvideCryptoSetupExtensions,
     DefaultCryptoSetupExtensions,
 } from "../../src/lifecycles/CryptoSetupExtensions";
-import { DefaultExperimentalExtensions, ExperimentalExtensionsBase, IProvideExperimentalExtensions } from "../../src/lifecycles/ExperimentalExtensions";
+import { DefaultExperimentalExtensions, ExperimentalExtensionsBase } from "../../src/lifecycles/ExperimentalExtensions";
 
 describe("Defaults", () => {
-
     let module: RuntimeModule;
 
     beforeAll(() => {
@@ -36,8 +35,8 @@ describe("Defaults", () => {
 
                 this.extensions = {
                     cryptoSetup: new DefaultCryptoSetupExtensions(),
-                    experimental: new DefaultExperimentalExtensions()
-                }
+                    experimental: new DefaultExperimentalExtensions(),
+                };
             }
         })();
     });
@@ -60,25 +59,23 @@ describe("Defaults", () => {
     it("must not throw when calling default examineLoginResponse()", () => {
         var credentials = new (class implements IExtendedMatrixClientCreds {
             identityServerUrl?: string | undefined;
-            userId: string = ""
+            userId: string = "";
             deviceId?: string | undefined;
-            accessToken: string = ""
+            accessToken: string = "";
             refreshToken?: string | undefined;
             guest?: boolean | undefined;
             pickleKey?: string | undefined;
             freshLogin?: boolean | undefined;
-            homeserverUrl: string = ""
-            secureBackupKey?: string | undefined = ""            
-        });
+            homeserverUrl: string = "";
+            secureBackupKey?: string | undefined = "";
+        })();
 
-        let t = () => module.extensions!.cryptoSetup?.examineLoginResponse({secureBackupKey: "my key"}, credentials );
+        let t = () => module.extensions!.cryptoSetup?.examineLoginResponse({ secureBackupKey: "my key" }, credentials);
         expect(t).not.toThrow();
     });
 });
 
-
 describe("Custom CryptoSetupExtensions", () => {
-
     let module: RuntimeModule;
 
     beforeAll(() => {
@@ -88,28 +85,31 @@ describe("Custom CryptoSetupExtensions", () => {
 
                 this.extensions = {
                     cryptoSetup: new (class extends CryptoSetupExtensionsBase {
-                        persistCredentials(credentials: IExtendedMatrixClientCreds): void {
-                        }
-                        catchAccessSecretStorageError(e: Error): void {                            
-                        }
+                        persistCredentials(credentials: IExtendedMatrixClientCreds): void {}
+                        catchAccessSecretStorageError(e: Error): void {}
                         setupEncryptionNeeded(args: CryptoSetupArgs): boolean {
                             return true;
                         }
                         getSecretStorageKey(): Uint8Array | null {
-                            return new Uint8Array([0xaa, 0xbb, 0xbb, 0xaa])
+                            return new Uint8Array([0xaa, 0xbb, 0xbb, 0xaa]);
                         }
                         createSecretStorageKey(): Uint8Array | null {
                             return new Uint8Array([0xaa, 0xbb, 0xbb, 0xaa, 0xaa, 0xbb, 0xbb, 0xaa]);
-                        }                    
-                        getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null {
-                            return (_,__) => Promise.resolve(new Uint8Array([0x0, 0x1, 0x2, 0x3]) );
                         }
-                        examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {      
-                            credentials.secureBackupKey = "my secure backup key";          
+                        getDehydrationKeyCallback():
+                            | ((
+                                  keyInfo: SecretStorageKeyDescription,
+                                  checkFunc: (key: Uint8Array) => void,
+                              ) => Promise<Uint8Array>)
+                            | null {
+                            return (_, __) => Promise.resolve(new Uint8Array([0x0, 0x1, 0x2, 0x3]));
                         }
-                        SHOW_ENCRYPTION_SETUP_UI: boolean = false
-                    })()
-                }
+                        examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
+                            credentials.secureBackupKey = "my secure backup key";
+                        }
+                        SHOW_ENCRYPTION_SETUP_UI: boolean = false;
+                    })(),
+                };
             }
         })();
     });
@@ -126,7 +126,7 @@ describe("Custom CryptoSetupExtensions", () => {
 
     it("returns callback which resolves to custom value when calling getDehydrationKeyCallback", async () => {
         let callback = module.extensions!.cryptoSetup!.getDehydrationKeyCallback() as any;
-        const result = await callback( {} as SecretStorageKeyDescription, ()=>{});
+        const result = await callback({} as SecretStorageKeyDescription, () => {});
         const expected = Uint8Array.from([0x0, 0x1, 0x2, 0x3]);
         expect(result).toEqual(expected);
     });
@@ -134,49 +134,45 @@ describe("Custom CryptoSetupExtensions", () => {
     it("must allow adding secure backup key to login response", () => {
         var credentials = new (class implements IExtendedMatrixClientCreds {
             identityServerUrl?: string | undefined;
-            userId: string = ""
+            userId: string = "";
             deviceId?: string | undefined;
-            accessToken: string = ""
+            accessToken: string = "";
             refreshToken?: string | undefined;
             guest?: boolean | undefined;
             pickleKey?: string | undefined;
             freshLogin?: boolean | undefined;
-            homeserverUrl: string = ""
-            secureBackupKey?: string | undefined = ""            
-        });
+            homeserverUrl: string = "";
+            secureBackupKey?: string | undefined = "";
+        })();
 
-        module.extensions!.cryptoSetup?.examineLoginResponse({secureBackupKey: "my key"}, credentials );
+        module.extensions!.cryptoSetup?.examineLoginResponse({ secureBackupKey: "my key" }, credentials);
         expect(credentials.secureBackupKey).toEqual("my secure backup key");
     });
 });
 
-
 describe("Custom ExperimentalExtensions", () => {
-
     let module: RuntimeModule;
 
     beforeAll(() => {
-
         module = new (class extends RuntimeModule {
             public constructor() {
                 super(undefined as any);
 
                 this.extensions = {
-                    cryptoSetup: {} as IProvideCryptoSetupExtensions, 
+                    cryptoSetup: {} as IProvideCryptoSetupExtensions,
                     experimental: new (class extends ExperimentalExtensionsBase {
                         experimentalMethod(args?: any) {
-                            return "test 123"
+                            return "test 123";
                         }
-                    })()
-                }
+                    })(),
+                };
             }
         })();
     });
 
     it("must not throw calling experimentalMethod without arguments", () => {
-
-        let t = () => module.extensions!.experimental!.experimentalMethod();    
-        expect(t).not.toThrow();    
+        let t = () => module.extensions!.experimental!.experimentalMethod();
+        expect(t).not.toThrow();
     });
 
     it("must return correct custom value for experimentalMethod", () => {

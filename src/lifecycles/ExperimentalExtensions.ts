@@ -14,8 +14,8 @@ limitations under the License.
 */
 
 /**
- * Mostly for test. To ensure we handle more than one module having extensions 
- * Can possibly also be useful for PoC development 
+ * Mostly for test. To ensure we handle more than one module having extensions
+ * Can possibly also be useful for PoC development
  */
 export interface IProvideExperimentalExtensions {
     experimentalMethod(args?: any): any;
@@ -26,7 +26,7 @@ export abstract class ExperimentalExtensionsBase implements IProvideExperimental
 }
 
 export class DefaultExperimentalExtensions extends ExperimentalExtensionsBase {
-   public experimentalMethod(args?: any): any {    
-        return null;    
+    public experimentalMethod(args?: any): any {
+        return null;
     }
 }
