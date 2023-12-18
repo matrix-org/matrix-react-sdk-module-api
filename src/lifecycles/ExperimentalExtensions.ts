@@ -18,15 +18,15 @@ limitations under the License.
  * Can possibly also be useful for PoC development 
  */
 export interface IProvideExperimentalExtensions {
-    experimentalMethod(args?: any): any
+    experimentalMethod(args?: any): any;
 }
 
 export abstract class ExperimentalExtensionsBase implements IProvideExperimentalExtensions {
-    abstract experimentalMethod(args?: any): any
+    public abstract experimentalMethod(args?: any): any;
 }
 
 export class DefaultExperimentalExtensions extends ExperimentalExtensionsBase {
-    experimentalMethod(args?: any): any {    
+   public experimentalMethod(args?: any): any {    
         return null;    
     }
 }

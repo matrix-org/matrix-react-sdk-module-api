@@ -18,7 +18,6 @@ import { EventEmitter } from "events";
 
 import { ModuleApi } from "./ModuleApi";
 import { PlainSubstitution } from "./types/translations";
-
 import { AllExtensions } from "./types/extensions";
 
 // TODO: Type the event emitter with AnyLifecycle (extract TypedEventEmitter from js-sdk somehow?)
@@ -27,8 +26,7 @@ import { AllExtensions } from "./types/extensions";
 /**
  * Represents a module which is loaded at runtime. Modules which implement this class
  * will be provided information about the application state and can react to it.
- */
-    
+ */    
 export abstract class RuntimeModule extends EventEmitter {
 
     public extensions?: AllExtensions;

@@ -17,6 +17,6 @@ import { IProvideCryptoSetupExtensions } from "../lifecycles/CryptoSetupExtensio
 import { IProvideExperimentalExtensions } from "../lifecycles/ExperimentalExtensions";
 
 export type AllExtensions = {
-    cryptoSetup?: IProvideCryptoSetupExtensions,
-    experimental?: IProvideExperimentalExtensions     
-}
+    cryptoSetup?: IProvideCryptoSetupExtensions;
+    experimental?: IProvideExperimentalExtensions;
+};
