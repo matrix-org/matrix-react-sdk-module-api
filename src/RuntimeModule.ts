@@ -26,11 +26,10 @@ import { AllExtensions } from "./types/extensions";
 /**
  * Represents a module which is loaded at runtime. Modules which implement this class
  * will be provided information about the application state and can react to it.
- */    
+ */
 export abstract class RuntimeModule extends EventEmitter {
-
     public extensions?: AllExtensions;
-    public moduleName: string = RuntimeModule.name; 
+    public moduleName: string = RuntimeModule.name;
 
     protected constructor(protected readonly moduleApi: ModuleApi) {
         super();

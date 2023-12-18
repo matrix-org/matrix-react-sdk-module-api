@@ -14,8 +14,8 @@ limitations under the License.
 */
 
 /*
-* Types copied (and renamed) from matrix-js-sdk 
-*/
+ * Types copied (and renamed) from matrix-js-sdk
+ */
 
 export interface SecretStorageKeyDescriptionCommon {
     /** A human-readable name for this key. */
@@ -61,9 +61,9 @@ export interface PassphraseInfo {
 }
 
 /*
-* Types copied (and renamed) from matrix-react-sdk
-* (MatrixClientCreds and Kind)
-*/
+ * Types copied (and renamed) from matrix-react-sdk
+ * (MatrixClientCreds and Kind)
+ */
 
 export interface IExamineLoginResponseCreds {
     homeserverUrl: string;
@@ -87,22 +87,24 @@ export interface IExtendedMatrixClientCreds extends IExamineLoginResponseCreds {
     secureBackupKey?: string;
 }
 
-export interface IProvideCryptoSetupStore{
+export interface IProvideCryptoSetupStore {
     getInstance: () => ISetupEncryptionStoreProjection;
 }
 
-export interface ISetupEncryptionStoreProjection{
+export interface ISetupEncryptionStoreProjection {
     usePassPhrase(): Promise<void>;
 }
 
-export protected interface IProvideCryptoSetupExtensions {
+export interface IProvideCryptoSetupExtensions {
     examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void;
     persistCredentials(credentials: IExtendedMatrixClientCreds): void;
     getSecretStorageKey(): Uint8Array | null;
     createSecretStorageKey(): Uint8Array | null;
     catchAccessSecretStorageError(e: Error): void;
     setupEncryptionNeeded: (args: CryptoSetupArgs) => boolean;
-
+    getDehydrationKeyCallback():
+        | ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>)
+        | null;
     SHOW_ENCRYPTION_SETUP_UI: boolean;
 }
 
@@ -113,24 +115,25 @@ export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupEx
     public abstract createSecretStorageKey(): Uint8Array | null;
     public abstract catchAccessSecretStorageError(e: Error): void;
     public abstract setupEncryptionNeeded(args: CryptoSetupArgs): boolean;
-    public abstract getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null;
+    public abstract getDehydrationKeyCallback():
+        | ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>)
+        | null;
     public abstract SHOW_ENCRYPTION_SETUP_UI: boolean;
 }
 
 /* Define an interface for setupEncryptionNeeded to help enforce mandatory arguments */
 export interface CryptoSetupArgs {
-    kind: SetupEncryptionKind; 
+    kind: SetupEncryptionKind;
     storeProvider: IProvideCryptoSetupStore;
 }
 
 /**
- *  
+ *
  * The default/empty crypto-extensions
  * Can (and will) be used if none of the modules has an implementaion of IProvideCryptoSetupExtensions
- * 
+ *
  * */
 export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase {
-
     public SHOW_ENCRYPTION_SETUP_UI = true;
 
     public examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
@@ -159,7 +162,9 @@ export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase {
         return false;
     }
 
-    public getDehydrationKeyCallback(): ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>) | null {
+    public getDehydrationKeyCallback():
+        | ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>)
+        | null {
         console.log("Default empty getDehydrationKeyCallback() => null");
         return null;
     }
