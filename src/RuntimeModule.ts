@@ -18,6 +18,7 @@ import { EventEmitter } from "events";
 
 import { ModuleApi } from "./ModuleApi";
 import { PlainSubstitution } from "./types/translations";
+import { AllExtensions } from "./types/extensions";
 
 // TODO: Type the event emitter with AnyLifecycle (extract TypedEventEmitter from js-sdk somehow?)
 // See https://github.com/matrix-org/matrix-react-sdk-module-api/issues/4
@@ -27,6 +28,9 @@ import { PlainSubstitution } from "./types/translations";
  * will be provided information about the application state and can react to it.
  */
 export abstract class RuntimeModule extends EventEmitter {
+    public extensions?: AllExtensions;
+    public moduleName: string = RuntimeModule.name;
+
     protected constructor(protected readonly moduleApi: ModuleApi) {
         super();
     }
