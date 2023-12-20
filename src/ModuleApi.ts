@@ -20,6 +20,8 @@ import { PlainSubstitution, TranslationStringsObject } from "./types/translation
 import { DialogContent, DialogProps } from "./components/DialogContent";
 import { AccountAuthInfo } from "./types/AccountAuthInfo";
 import { ModuleUiDialogOptions } from "./types/ModuleUiDialogOptions";
+import { App } from "./types/App";
+import { Container } from "./types/Container";
 
 /**
  * A module API surface for the react-sdk. Provides a stable API for modules to
@@ -120,4 +122,40 @@ export interface ModuleApi {
      * @returns The config value verbatim.
      */
     getConfigValue<T>(namespace: string, key: string): T | undefined;
+
+    /**
+     * Gets the apps for a given room.
+     *
+     * @param roomId The room ID to get the apps for.
+     * @returns The apps for the given room.
+     */
+    getApps(roomId: string): Array<App>;
+
+    /**
+     * Gets the avatar URL for an app.
+     *
+     * @param app The app to get the avatar URL for.
+     * @param width The width of the avatar.
+     * @param height The height of the avatar.
+     * @param resizeMethod The resize method to use, either "crop" or "scale".
+     */
+    getAppAvatarUrl(app: App, width?: number, height?: number, resizeMethod?: string): string | null;
+
+    /**
+     * Checks if an app is in a container for a given room.
+     *
+     * @param app The app to check.
+     * @param container The container to check.
+     * @param roomId The room ID to check.
+     */
+    isAppInContainer(app: App, container: Container, roomId: string): boolean;
+
+    /**
+     * Moves apps to containers for a given room.
+     *
+     * @param app The app to move.
+     * @param container The container to move the app to.
+     * @param roomId The room ID to move the app in.
+     */
+    moveAppToContainer(app: App, container: Container, roomId: string): void;
 }
