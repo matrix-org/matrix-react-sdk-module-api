@@ -28,7 +28,6 @@ import { AllExtensions } from "./types/extensions";
  * will be provided information about the application state and can react to it.
  */
 export abstract class RuntimeModule extends EventEmitter {
-    
     public extensions?: AllExtensions;
     public moduleName: string = RuntimeModule.name;
 
