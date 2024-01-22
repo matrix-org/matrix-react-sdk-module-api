@@ -17,6 +17,9 @@ limitations under the License.
  * Types copied (and renamed) from matrix-js-sdk
  */
 
+/**
+ * Copied from https://github.com/matrix-org/matrix-js-sdk/blob/2337d5a7af6265bbcabbd42c1594cd8b1829b00b/src/secret-storage.ts#L39-L50
+ */
 export interface SecretStorageKeyDescriptionCommon {
     /** A human-readable name for this key. */
     // XXX: according to the spec, this is optional
@@ -30,6 +33,9 @@ export interface SecretStorageKeyDescriptionCommon {
     passphrase: PassphraseInfo;
 }
 
+/**
+ * Copied from https://github.com/matrix-org/matrix-js-sdk/blob/2337d5a7af6265bbcabbd42c1594cd8b1829b00b/src/secret-storage.ts#L59-L71
+ */
 export interface SecretStorageKeyDescriptionAesV1 extends SecretStorageKeyDescriptionCommon {
     // XXX: strictly speaking, we should be able to enforce the algorithm here. But
     //   this interface ends up being incorrectly used where other algorithms are in use (notably
@@ -44,8 +50,14 @@ export interface SecretStorageKeyDescriptionAesV1 extends SecretStorageKeyDescri
     mac: string;
 }
 
+/**
+ * Copied from https://github.com/matrix-org/matrix-js-sdk/blob/2337d5a7af6265bbcabbd42c1594cd8b1829b00b/src/secret-storage.ts#L78
+ */
 export type SecretStorageKeyDescription = SecretStorageKeyDescriptionAesV1;
 
+/**
+ * Copied from https://github.com/matrix-org/matrix-js-sdk/blob/2337d5a7af6265bbcabbd42c1594cd8b1829b00b/src/secret-storage.ts#L85-L97
+ */
 export interface PassphraseInfo {
     /** The algorithm to be used to derive the key. */
     algorithm: "m.pbkdf2";
@@ -61,10 +73,8 @@ export interface PassphraseInfo {
 }
 
 /*
- * Types copied (and renamed) from matrix-react-sdk
- * (MatrixClientCreds and Kind)
+ * Copied from https://github.com/matrix-org/matrix-react-sdk/blob/11096b207a1510569f5c54182e328f6148a6475c/src/MatrixClientPeg.ts#L57-L67
  */
-
 export interface ExamineLoginResponseCreds {
     homeserverUrl: string;
     identityServerUrl?: string;
@@ -77,10 +87,13 @@ export interface ExamineLoginResponseCreds {
     freshLogin?: boolean;
 }
 
+/**
+ * Copied from https://github.com/matrix-org/matrix-react-sdk/blob/11096b207a1510569f5c54182e328f6148a6475c/src/toasts/SetupEncryptionToast.ts#L71-L75
+ */
 export enum SetupEncryptionKind {
-    SET_UP_ENCRYPTION = "set_up_encryption",
-    UPGRADE_ENCRYPTION = "upgrade_encryption",
-    VERIFY_THIS_SESSION = "verify_this_session",
+    SetUpEncryption = "set_up_encryption",
+    UpgradeEncryption = "upgrade_encryption",
+    VerifyThisSessions = "verify_this_session",
 }
 
 export interface ExtendedMatrixClientCreds extends ExamineLoginResponseCreds {
