@@ -17,11 +17,11 @@ limitations under the License.
  * Mostly for test. To ensure we handle more than one module having extensions
  * Can possibly also be useful for PoC development
  */
-export interface IProvideExperimentalExtensions {
+export interface ProvideExperimentalExtensions {
     experimentalMethod(args?: any): any;
 }
 
-export abstract class ExperimentalExtensionsBase implements IProvideExperimentalExtensions {
+export abstract class ExperimentalExtensionsBase implements ProvideExperimentalExtensions {
     public abstract experimentalMethod(args?: any): any;
 }
 

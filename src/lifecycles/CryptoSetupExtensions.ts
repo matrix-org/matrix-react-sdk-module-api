@@ -65,7 +65,7 @@ export interface PassphraseInfo {
  * (MatrixClientCreds and Kind)
  */
 
-export interface IExamineLoginResponseCreds {
+export interface ExamineLoginResponseCreds {
     homeserverUrl: string;
     identityServerUrl?: string;
     userId: string;
@@ -83,21 +83,21 @@ export enum SetupEncryptionKind {
     VERIFY_THIS_SESSION = "verify_this_session",
 }
 
-export interface IExtendedMatrixClientCreds extends IExamineLoginResponseCreds {
+export interface ExtendedMatrixClientCreds extends ExamineLoginResponseCreds {
     secureBackupKey?: string;
 }
 
-export interface IProvideCryptoSetupStore {
-    getInstance: () => ISetupEncryptionStoreProjection;
+export interface ProvideCryptoSetupStore {
+    getInstance: () => SetupEncryptionStoreProjection;
 }
 
-export interface ISetupEncryptionStoreProjection {
+export interface SetupEncryptionStoreProjection {
     usePassPhrase(): Promise<void>;
 }
 
-export interface IProvideCryptoSetupExtensions {
-    examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void;
-    persistCredentials(credentials: IExtendedMatrixClientCreds): void;
+export interface ProvideCryptoSetupExtensions {
+    examineLoginResponse(response: any, credentials: ExtendedMatrixClientCreds): void;
+    persistCredentials(credentials: ExtendedMatrixClientCreds): void;
     getSecretStorageKey(): Uint8Array | null;
     createSecretStorageKey(): Uint8Array | null;
     catchAccessSecretStorageError(e: Error): void;
@@ -108,9 +108,9 @@ export interface IProvideCryptoSetupExtensions {
     SHOW_ENCRYPTION_SETUP_UI: boolean;
 }
 
-export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupExtensions {
-    public abstract examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void;
-    public abstract persistCredentials(credentials: IExtendedMatrixClientCreds): void;
+export abstract class CryptoSetupExtensionsBase implements ProvideCryptoSetupExtensions {
+    public abstract examineLoginResponse(response: any, credentials: ExtendedMatrixClientCreds): void;
+    public abstract persistCredentials(credentials: ExtendedMatrixClientCreds): void;
     public abstract getSecretStorageKey(): Uint8Array | null;
     public abstract createSecretStorageKey(): Uint8Array | null;
     public abstract catchAccessSecretStorageError(e: Error): void;
@@ -124,7 +124,7 @@ export abstract class CryptoSetupExtensionsBase implements IProvideCryptoSetupEx
 /* Define an interface for setupEncryptionNeeded to help enforce mandatory arguments */
 export interface CryptoSetupArgs {
     kind: SetupEncryptionKind;
-    storeProvider: IProvideCryptoSetupStore;
+    storeProvider: ProvideCryptoSetupStore;
 }
 
 /**
@@ -136,10 +136,10 @@ export interface CryptoSetupArgs {
 export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase {
     public SHOW_ENCRYPTION_SETUP_UI = true;
 
-    public examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
+    public examineLoginResponse(response: any, credentials: ExtendedMatrixClientCreds): void {
         console.log("Default empty examineLoginResponse() => void");
     }
-    public persistCredentials(credentials: IExtendedMatrixClientCreds): void {
+    public persistCredentials(credentials: ExtendedMatrixClientCreds): void {
         console.log("Default empty persistCredentials() => void");
     }
 

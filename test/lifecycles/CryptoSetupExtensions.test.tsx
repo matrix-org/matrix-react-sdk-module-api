@@ -16,11 +16,11 @@ limitations under the License.
 
 import { RuntimeModule } from "../../src";
 import {
-    IExtendedMatrixClientCreds,
+    ExtendedMatrixClientCreds,
     CryptoSetupExtensionsBase,
     SecretStorageKeyDescription,
     CryptoSetupArgs,
-    IProvideCryptoSetupExtensions,
+    ProvideCryptoSetupExtensions,
     DefaultCryptoSetupExtensions,
 } from "../../src/lifecycles/CryptoSetupExtensions";
 import { DefaultExperimentalExtensions, ExperimentalExtensionsBase } from "../../src/lifecycles/ExperimentalExtensions";
@@ -57,7 +57,7 @@ describe("Defaults", () => {
     });
 
     it("must not throw when calling default examineLoginResponse()", () => {
-        var credentials = new (class implements IExtendedMatrixClientCreds {
+        var credentials = new (class implements ExtendedMatrixClientCreds {
             identityServerUrl?: string | undefined;
             userId: string = "";
             deviceId?: string | undefined;
@@ -85,7 +85,7 @@ describe("Custom CryptoSetupExtensions", () => {
 
                 this.extensions = {
                     cryptoSetup: new (class extends CryptoSetupExtensionsBase {
-                        persistCredentials(credentials: IExtendedMatrixClientCreds): void {}
+                        persistCredentials(credentials: ExtendedMatrixClientCreds): void {}
                         catchAccessSecretStorageError(e: Error): void {}
                         setupEncryptionNeeded(args: CryptoSetupArgs): boolean {
                             return true;
@@ -104,7 +104,7 @@ describe("Custom CryptoSetupExtensions", () => {
                             | null {
                             return (_, __) => Promise.resolve(new Uint8Array([0x0, 0x1, 0x2, 0x3]));
                         }
-                        examineLoginResponse(response: any, credentials: IExtendedMatrixClientCreds): void {
+                        examineLoginResponse(response: any, credentials: ExtendedMatrixClientCreds): void {
                             credentials.secureBackupKey = "my secure backup key";
                         }
                         SHOW_ENCRYPTION_SETUP_UI: boolean = false;
@@ -132,7 +132,7 @@ describe("Custom CryptoSetupExtensions", () => {
     });
 
     it("must allow adding secure backup key to login response", () => {
-        var credentials = new (class implements IExtendedMatrixClientCreds {
+        var credentials = new (class implements ExtendedMatrixClientCreds {
             identityServerUrl?: string | undefined;
             userId: string = "";
             deviceId?: string | undefined;
@@ -159,7 +159,7 @@ describe("Custom ExperimentalExtensions", () => {
                 super(undefined as any);
 
                 this.extensions = {
-                    cryptoSetup: {} as IProvideCryptoSetupExtensions,
+                    cryptoSetup: {} as ProvideCryptoSetupExtensions,
                     experimental: new (class extends ExperimentalExtensionsBase {
                         experimentalMethod(args?: any) {
                             return "test 123";

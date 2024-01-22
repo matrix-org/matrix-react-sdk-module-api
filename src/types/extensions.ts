@@ -13,10 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { IProvideCryptoSetupExtensions } from "../lifecycles/CryptoSetupExtensions";
-import { IProvideExperimentalExtensions } from "../lifecycles/ExperimentalExtensions";
+import { ProvideCryptoSetupExtensions } from "../lifecycles/CryptoSetupExtensions";
+import { ProvideExperimentalExtensions } from "../lifecycles/ExperimentalExtensions";
 
 export type AllExtensions = {
-    cryptoSetup?: IProvideCryptoSetupExtensions;
-    experimental?: IProvideExperimentalExtensions;
+    cryptoSetup?: ProvideCryptoSetupExtensions;
+    experimental?: ProvideExperimentalExtensions;
 };
