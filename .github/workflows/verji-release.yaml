@@ -1,4 +1,4 @@
-name: Release Automation
+name: Verji Build package
 on:
     workflow_dispatch:
         inputs:
