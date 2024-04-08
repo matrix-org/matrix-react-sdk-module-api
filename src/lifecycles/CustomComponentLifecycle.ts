@@ -47,7 +47,7 @@ export enum CustomComponentLifecycle {
     RoomView = "room_view",
     SessionManagerTab = "session_manage_tab",
     SpacePanel = "space_panel",
-    UserMenu = "user_menu"
+    UserMenu = "user_menu",
 }
 
 /**
