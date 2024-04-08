@@ -17,8 +17,8 @@ limitations under the License.
 */
 
 /* 
-    CustomComponentLifecycle is heavily inspired by the WrapperLifecycle.ts, but is intended for a different usecase.
-    Instead of appending something within the wrapper, this lifecycle should swap the contents of the wrapper with a custom component provided by a module implementation.
+CustomComponentLifecycle is heavily inspired by the WrapperLifecycle.ts, but is intended for a different usecase.
+Instead of appending something within the wrapper, this lifecycle should swap the contents of the wrapper with a custom component provided by a module implementation.
 */
 
 import { ComponentType, PropsWithChildren } from "react";
@@ -29,7 +29,7 @@ import { ComponentType, PropsWithChildren } from "react";
 export enum CustomComponentLifecycle {
     /**
      * An event to request the component module. `ModuleRunner` should invoke an event matching the wrapped component.
-     * so any custom module can get the component provided by the module if any.
+     * So that any custom module can get the correct component based on Lifecycle event.
      */
     AppsDrawer = "apps_drawer",
     EntityTile = "entity_tile",
@@ -63,6 +63,6 @@ export type CustomComponentOpts = {
 };
 
 /**
- * Helper type that documents how to implement a UserMenu listener.
+ * Helper type that documents how to implement a CustomComponent listener.
  */
 export type CustomComponentListener = (opts: CustomComponentOpts) => void;
