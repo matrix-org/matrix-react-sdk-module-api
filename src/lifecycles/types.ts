@@ -17,5 +17,6 @@ limitations under the License.
 import { RoomViewLifecycle } from "./RoomViewLifecycle";
 import { WidgetLifecycle } from "./WidgetLifecycle";
 import { WrapperLifecycle } from "./WrapperLifecycle";
+import { CustomComponentLifecycle } from "./CustomComponentLifecycle";
 
-export type AnyLifecycle = RoomViewLifecycle | WidgetLifecycle | WrapperLifecycle;
+export type AnyLifecycle = RoomViewLifecycle | WidgetLifecycle | WrapperLifecycle | CustomComponentLifecycle;
