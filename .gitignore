@@ -2,7 +2,6 @@
 .idea/
 lib/
 .npmrc
-.github/
 
 # Logs
 logs
