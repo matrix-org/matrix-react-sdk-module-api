@@ -1,5 +1,7 @@
 /*
 Copyright 2024 Verji Tech AS
+Copyright 2023 Mikhail Aheichyk
+Copyright 2023 Nordeck IT + Consulting GmbH.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
