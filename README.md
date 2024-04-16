@@ -104,13 +104,14 @@ From the `RuntimeModule` instance, modules can listen for `WrapperLifecycle.Wrap
 It would wrap the `MatrixChat` component and let any consumer add a header, a footer.
 
 ### Custom components
+
 From the `RuntimeModule` instance, modules can listen for different `CustomComponentLifecycle` events and swap the component
-with a custom written component. In principle it works the same way as the `WrapperLifecycle`, but the usecase is different. 
+with a custom written component. In principle it works the same way as the `WrapperLifecycle`, but the usecase is different.
 Instead of wrapping the element, you can intercept it, consume the state of the component including its children, and return
-your own customly written component. 
+your own customly written component.
 
 It is possible to add `matrix-react-sdk`, `matrix-js-sdk` as a dependency into your custom module implementation to gain complete
-functionality within your custom components, aswell as the ability to reuse sub-components and styles.  
+functionality within your custom components, aswell as the ability to reuse sub-components and styles.
 
 ## Contributing / developing
 
