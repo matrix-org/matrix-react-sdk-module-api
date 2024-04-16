@@ -18,25 +18,36 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 
 import { RuntimeModule } from "../../src/RuntimeModule";
-import { CustomComponentLifecycle, CustomComponentListener, CustomComponentOpts } from "../../src/lifecycles/CustomComponentLifecycle";
+import {
+    CustomComponentLifecycle,
+    CustomComponentListener,
+    CustomComponentOpts,
+} from "../../src/lifecycles/CustomComponentLifecycle";
 
 //Mock a CustomUserMenu
-class CustomUserMenu extends React.Component{
+class CustomUserMenu extends React.Component {
     render() {
-        return <div className="customUserMenu" title="CustomUserMenu">{this.props.children}</div>
+        return (
+            <div className="customUserMenu" title="CustomUserMenu">
+                {this.props.children}
+            </div>
+        );
     }
 }
 //Mock a default UserMenu
 class UserMenu extends React.Component {
-    render(){
-        return <div className="defaultUserMenu" title="UserMenu">{this.props.children}</div>
+    render() {
+        return (
+            <div className="defaultUserMenu" title="UserMenu">
+                {this.props.children}
+            </div>
+        );
     }
 }
 describe("CustomComponentLifecycle", () => {
     let module: RuntimeModule;
 
     beforeAll(() => {
-
         module = new (class extends RuntimeModule {
             constructor() {
                 super(undefined as any);
@@ -46,12 +57,10 @@ describe("CustomComponentLifecycle", () => {
 
             protected customComponentListener: CustomComponentListener = (customComponentOpts: CustomComponentOpts) => {
                 customComponentOpts.CustomComponent = ({ children }) => {
-                    let usermenu: any = React.Children.toArray(children)[0]
+                    let usermenu: any = React.Children.toArray(children)[0];
                     return (
                         <>
-                            <CustomUserMenu>
-                                {usermenu.props?.children}
-                            </CustomUserMenu>
+                            <CustomUserMenu>{usermenu.props?.children}</CustomUserMenu>
                         </>
                     );
                 };
@@ -71,19 +80,18 @@ describe("CustomComponentLifecycle", () => {
                 </UserMenu>
             </customComponentOpts.CustomComponent>,
         );
-        
+
         const customUserMenu = screen.getByTitle("CustomUserMenu");
         expect(customUserMenu).toBeInTheDocument();
-        expect(customUserMenu.children.length).toEqual(2)
+        expect(customUserMenu.children.length).toEqual(2);
 
         const defaultUserMenu = screen.queryByTitle("UserMenu");
-        expect(defaultUserMenu).toStrictEqual(null)
-        
+        expect(defaultUserMenu).toStrictEqual(null);
+
         const child1 = screen.getByText(/Child1/i);
         const child2 = screen.getByText(/Child2/i);
         expect(child1).toBeInTheDocument();
         expect(child2).toBeInTheDocument();
-
     });
 
     it("should NOT swap the UserMenu when module emits an event we are not listening to in the module", () => {
@@ -100,19 +108,18 @@ describe("CustomComponentLifecycle", () => {
                 </UserMenu>
             </customComponentOpts.CustomComponent>,
         );
-        
+
         // The document should not be affected at all
         const defaultUserMenu = screen.getByTitle("UserMenu");
         expect(defaultUserMenu).toBeInTheDocument();
-        expect(defaultUserMenu.children.length).toEqual(2)
+        expect(defaultUserMenu.children.length).toEqual(2);
 
         const customUserMenu = screen.queryByTitle("CustomUserMenu");
-        expect(customUserMenu).toStrictEqual(null)
-        
+        expect(customUserMenu).toStrictEqual(null);
+
         const child1 = screen.getByText(/Child1/i);
         const child2 = screen.getByText(/Child2/i);
         expect(child1).toBeInTheDocument();
         expect(child2).toBeInTheDocument();
-
     });
 });
