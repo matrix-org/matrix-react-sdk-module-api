@@ -14,15 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import React from "react";
+import React, { ReactPortal } from "react";
 import { render, screen } from "@testing-library/react";
-
 import { RuntimeModule } from "../../src/RuntimeModule";
 import {
     CustomComponentLifecycle,
     CustomComponentListener,
     CustomComponentOpts,
 } from "../../src/lifecycles/CustomComponentLifecycle";
+import { ModuleApi } from "../../src/ModuleApi";
 
 //Mock a CustomUserMenu
 class CustomUserMenu extends React.Component {
@@ -44,82 +44,210 @@ class UserMenu extends React.Component {
         );
     }
 }
+interface MyComponentProps {
+    children: React.ReactNode;
+}
+
+// Mock a functional custom Component
+const CustomFunctionalComponent: React.FC<MyComponentProps> = ({ children }) => {
+    return <div title="CustomFunctionalComponent">{children}</div>;
+};
+// Mock a functional Component
+const FunctionalComponent: React.FC<MyComponentProps> = ({ children }) => {
+    return <div title="FunctionalComponent">{children}</div>;
+};
+
 describe("CustomComponentLifecycle", () => {
-    let module: RuntimeModule;
+    describe("tests on Class components", () => {
+        let module: RuntimeModule;
+        let moduleApi: ModuleApi;
+        beforeAll(() => {
+            module = new (class extends RuntimeModule {
+                constructor() {
+                    super(moduleApi);
 
-    beforeAll(() => {
-        module = new (class extends RuntimeModule {
-            constructor() {
-                super(undefined as any);
+                    this.on(CustomComponentLifecycle.UserMenu, this.customComponentListener);
+                }
 
-                this.on(CustomComponentLifecycle.UserMenu, this.customComponentListener);
-            }
+                protected customComponentListener: CustomComponentListener = (
+                    customComponentOpts: CustomComponentOpts,
+                ) => {
+                    customComponentOpts.CustomComponent = ({ children }) => {
+                        const usermenu = React.Children.toArray(children)[0] as UserMenu;
+                        const usermenuChildren = usermenu?.props?.children ?? React.Fragment;
 
-            protected customComponentListener: CustomComponentListener = (customComponentOpts: CustomComponentOpts) => {
-                customComponentOpts.CustomComponent = ({ children }) => {
-                    let usermenu: any = React.Children.toArray(children)[0];
-                    return (
-                        <>
-                            <CustomUserMenu>{usermenu.props?.children}</CustomUserMenu>
-                        </>
-                    );
+                        return (
+                            <>
+                                <CustomUserMenu>{usermenuChildren}</CustomUserMenu>
+                            </>
+                        );
+                    };
                 };
-            };
-        })();
+            })();
+        });
+
+        it("should swap the UserMenu with CustomUserMenu and keep it's children", () => {
+            const customComponentOpts: CustomComponentOpts = { CustomComponent: React.Fragment };
+            module.emit(CustomComponentLifecycle.UserMenu, customComponentOpts);
+
+            render(
+                <customComponentOpts.CustomComponent>
+                    <UserMenu>
+                        <span>Child1</span>
+                        <span>Child2</span>
+                    </UserMenu>
+                </customComponentOpts.CustomComponent>,
+            );
+
+            const customUserMenu = screen.getByTitle("CustomUserMenu");
+            expect(customUserMenu).toBeInTheDocument();
+            expect(customUserMenu.children.length).toEqual(2);
+
+            const defaultUserMenu = screen.queryByTitle("UserMenu");
+            expect(defaultUserMenu).toStrictEqual(null);
+
+            const child1 = screen.getByText(/Child1/i);
+            const child2 = screen.getByText(/Child2/i);
+            expect(child1).toBeInTheDocument();
+            expect(child2).toBeInTheDocument();
+        });
+
+        it("should NOT swap the UserMenu when module emits an event we are not listening to in the module", () => {
+            const customComponentOpts: CustomComponentOpts = { CustomComponent: React.Fragment };
+
+            // We emit a different lifecycle event than what our mock-module is listening to
+            module.emit(CustomComponentLifecycle.Experimental, customComponentOpts);
+
+            render(
+                <customComponentOpts.CustomComponent>
+                    <UserMenu>
+                        <span>Child1</span>
+                        <span>Child2</span>
+                    </UserMenu>
+                </customComponentOpts.CustomComponent>,
+            );
+
+            // The document should not be affected at all
+            const defaultUserMenu = screen.getByTitle("UserMenu");
+            expect(defaultUserMenu).toBeInTheDocument();
+            expect(defaultUserMenu.children.length).toEqual(2);
+
+            const customUserMenu = screen.queryByTitle("CustomUserMenu");
+            expect(customUserMenu).toStrictEqual(null);
+
+            const child1 = screen.getByText(/Child1/i);
+            const child2 = screen.getByText(/Child2/i);
+            expect(child1).toBeInTheDocument();
+            expect(child2).toBeInTheDocument();
+        });
     });
+    describe("tests on FC components", () => {
+        let module: RuntimeModule;
+        let moduleApi: ModuleApi;
+        beforeAll(() => {
+            module = new (class extends RuntimeModule {
+                constructor() {
+                    super(moduleApi);
+                    // In this case we are reacting to the "Experimental" lifecyle, because we are testing a generic mocked functional component.
+                    this.on(CustomComponentLifecycle.Experimental, this.customComponentListener);
+                }
 
-    it("should swap the UserMenu with CustomUserMenu and keep it's children", () => {
-        const customComponentOpts: CustomComponentOpts = { CustomComponent: React.Fragment };
-        module.emit(CustomComponentLifecycle.UserMenu, customComponentOpts);
+                protected customComponentListener: CustomComponentListener = (
+                    customComponentOpts: CustomComponentOpts,
+                ) => {
+                    customComponentOpts.CustomComponent = ({ children }) => {
+                        // We extract the component wrapped in CustomComponentOpts.CustomComponent
+                        const defaultFunctionalComponent: ReactPortal = React.Children.toArray(
+                            children,
+                        )[0] as ReactPortal;
+                        return (
+                            <>
+                                <CustomFunctionalComponent>
+                                    {defaultFunctionalComponent.props.children}
+                                </CustomFunctionalComponent>
+                            </>
+                        );
+                    };
+                };
+            })();
+        });
 
-        render(
-            <customComponentOpts.CustomComponent>
-                <UserMenu>
-                    <span>Child1</span>
-                    <span>Child2</span>
-                </UserMenu>
-            </customComponentOpts.CustomComponent>,
-        );
+        it("should swap the the wrapped FunctionalComponent with the CustomFunctionalComponent and keep it's children", () => {
+            const customComponentOpts: CustomComponentOpts = { CustomComponent: React.Fragment };
+            module.emit(CustomComponentLifecycle.Experimental, customComponentOpts);
 
-        const customUserMenu = screen.getByTitle("CustomUserMenu");
-        expect(customUserMenu).toBeInTheDocument();
-        expect(customUserMenu.children.length).toEqual(2);
+            render(
+                <customComponentOpts.CustomComponent>
+                    <FunctionalComponent>
+                        <span>Child1</span>
+                        <span>Child2</span>
+                    </FunctionalComponent>
+                </customComponentOpts.CustomComponent>,
+            );
 
-        const defaultUserMenu = screen.queryByTitle("UserMenu");
-        expect(defaultUserMenu).toStrictEqual(null);
+            const CustomFunctionalComponent = screen.getByTitle("CustomFunctionalComponent");
 
-        const child1 = screen.getByText(/Child1/i);
-        const child2 = screen.getByText(/Child2/i);
-        expect(child1).toBeInTheDocument();
-        expect(child2).toBeInTheDocument();
-    });
+            expect(CustomFunctionalComponent).toBeInTheDocument();
+            expect(CustomFunctionalComponent.children.length).toEqual(2);
 
-    it("should NOT swap the UserMenu when module emits an event we are not listening to in the module", () => {
-        const customComponentOpts: CustomComponentOpts = { CustomComponent: React.Fragment };
+            const defaultFunctionalCompoonent = screen.queryByTitle("FunctionalComponent");
+            expect(defaultFunctionalCompoonent).toStrictEqual(null);
 
-        // We emit a different lifecycle event than what our mock-module is listening to
-        module.emit(CustomComponentLifecycle.Experimental, customComponentOpts);
+            const child1 = screen.getByText(/Child1/i);
+            const child2 = screen.getByText(/Child2/i);
+            expect(child1).toBeInTheDocument();
+            expect(child2).toBeInTheDocument();
+        });
+        it("should swap the the wrapped FunctionalComponent(alternative rendering style) with the CustomFunctionalComponent", () => {
+            const customComponentOpts: CustomComponentOpts = { CustomComponent: React.Fragment };
+            module.emit(CustomComponentLifecycle.Experimental, customComponentOpts);
 
-        render(
-            <customComponentOpts.CustomComponent>
-                <UserMenu>
-                    <span>Child1</span>
-                    <span>Child2</span>
-                </UserMenu>
-            </customComponentOpts.CustomComponent>,
-        );
+            const firstChild = <span key={1}>Child1</span>;
+            const secondChild = <span key={2}>Child2</span>;
 
-        // The document should not be affected at all
-        const defaultUserMenu = screen.getByTitle("UserMenu");
-        expect(defaultUserMenu).toBeInTheDocument();
-        expect(defaultUserMenu.children.length).toEqual(2);
+            render(
+                <customComponentOpts.CustomComponent>
+                    {FunctionalComponent({ children: [firstChild, secondChild] })}
+                </customComponentOpts.CustomComponent>,
+            );
+            const CustomFunctionalComponent = screen.getByTitle("CustomFunctionalComponent");
+            expect(CustomFunctionalComponent).toBeInTheDocument();
 
-        const customUserMenu = screen.queryByTitle("CustomUserMenu");
-        expect(customUserMenu).toStrictEqual(null);
+            const defaultFunctionalCompoonent = screen.queryByTitle("FunctionalComponent");
+            expect(defaultFunctionalCompoonent).toStrictEqual(null);
 
-        const child1 = screen.getByText(/Child1/i);
-        const child2 = screen.getByText(/Child2/i);
-        expect(child1).toBeInTheDocument();
-        expect(child2).toBeInTheDocument();
+            const child1 = screen.getByText(/Child1/i);
+            const child2 = screen.getByText(/Child2/i);
+            expect(child1).toBeInTheDocument();
+            expect(child2).toBeInTheDocument();
+        });
+        it("should NOT swap the FucntionalComponent when module emits an event we are not listening to in the module", () => {
+            const customComponentOpts: CustomComponentOpts = { CustomComponent: React.Fragment };
+
+            // We emit a different lifecycle event than what our mock-module is listening to
+            module.emit(CustomComponentLifecycle.ErrorBoundary, customComponentOpts);
+
+            render(
+                <customComponentOpts.CustomComponent>
+                    <FunctionalComponent>
+                        <span>Child1</span>
+                        <span>Child2</span>
+                    </FunctionalComponent>
+                </customComponentOpts.CustomComponent>,
+            );
+
+            // The document should not be affected at all
+            const defaultFunctionalCompoonent = screen.getByTitle("FunctionalComponent");
+            expect(defaultFunctionalCompoonent).toBeInTheDocument();
+            expect(defaultFunctionalCompoonent.children.length).toEqual(2);
+
+            const CustomFunctionalComponent = screen.queryByTitle("CustomFunctionalComponent");
+            expect(CustomFunctionalComponent).toStrictEqual(null);
+
+            const child1 = screen.getByText(/Child1/i);
+            const child2 = screen.getByText(/Child2/i);
+            expect(child1).toBeInTheDocument();
+            expect(child2).toBeInTheDocument();
+        });
     });
 });
