@@ -115,6 +115,7 @@ export interface ProvideCryptoSetupExtensions {
     createSecretStorageKey(): Uint8Array | null;
     catchAccessSecretStorageError(e: Error): void;
     setupEncryptionNeeded: (args: CryptoSetupArgs) => boolean;
+    /** @deprecated This callback is no longer used by matrix-react-sdk */
     getDehydrationKeyCallback():
         | ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>)
         | null;
@@ -128,9 +129,14 @@ export abstract class CryptoSetupExtensionsBase implements ProvideCryptoSetupExt
     public abstract createSecretStorageKey(): Uint8Array | null;
     public abstract catchAccessSecretStorageError(e: Error): void;
     public abstract setupEncryptionNeeded(args: CryptoSetupArgs): boolean;
-    public abstract getDehydrationKeyCallback():
+
+    /** `getDehydrationKeyCallback` is no longer used; we provide an empty impl for type compatibility. */
+    public getDehydrationKeyCallback():
         | ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>)
-        | null;
+        | null {
+        return null;
+    }
+    
     public abstract SHOW_ENCRYPTION_SETUP_UI: boolean;
 }
 
@@ -143,9 +149,8 @@ export interface CryptoSetupArgs {
 /**
  *
  * The default/empty crypto-extensions
- * Can (and will) be used if none of the modules has an implementaion of IProvideCryptoSetupExtensions
- *
- * */
+ * Can (and will) be used if none of the modules has an implementation of {@link ProvideCryptoSetupExtensions}.
+ */
 export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase {
     public SHOW_ENCRYPTION_SETUP_UI = true;
 
@@ -178,7 +183,6 @@ export class DefaultCryptoSetupExtensions extends CryptoSetupExtensionsBase {
     public getDehydrationKeyCallback():
         | ((keyInfo: SecretStorageKeyDescription, checkFunc: (key: Uint8Array) => void) => Promise<Uint8Array>)
         | null {
-        console.log("Default empty getDehydrationKeyCallback() => null");
         return null;
     }
 }
