@@ -136,7 +136,7 @@ export abstract class CryptoSetupExtensionsBase implements ProvideCryptoSetupExt
         | null {
         return null;
     }
-    
+
     public abstract SHOW_ENCRYPTION_SETUP_UI: boolean;
 }
 
