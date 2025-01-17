@@ -34,7 +34,7 @@ export interface ProvideBrandingExtensions {
      */
     getFaviconSrc(): PromiseLike<string | null>;
     /**
-     * Called when the app needs to generate a new "badge" favicon. 
+     * Called when the app needs to generate a new "badge" favicon.
      * @param content The content inside the "badge".
      * @param opts Extra parameters for the badge.
      * @returns A string URL for the icon, or null if no new icon should be generated.
@@ -43,10 +43,10 @@ export interface ProvideBrandingExtensions {
 }
 
 export abstract class BrandingExtensionsBase implements ProvideBrandingExtensions {
-    public getAppTitle(context: AppTitleContext) {
+    public getAppTitle(context: AppTitleContext): string | null {
         return null;
     }
-    public async getFaviconSrc(content?: number | string, opts?: GetFaviconParameters) {
+    public async getFaviconSrc(content?: number | string, opts?: GetFaviconParameters): Promise<string | null> {
         return null;
     }
 }
