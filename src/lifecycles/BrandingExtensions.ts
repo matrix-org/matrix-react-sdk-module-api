@@ -11,14 +11,14 @@ export interface AppTitleInRoom extends AppTitleBase {
     notificationsMuted: boolean;
 }
 
-export type AppTitleContext = AppTitleBase|AppTitleInRoom;
+export type AppTitleContext = AppTitleBase | AppTitleInRoom;
 
 export interface ProvideBrandingExtensions {
-    getAppTitle(context: AppTitleContext): string|null;
+    getAppTitle(context: AppTitleContext): string | null;
 }
 
 export abstract class BrandingExtensionsBase implements ProvideBrandingExtensions {
-    public getAppTitle(context: AppTitleContext): string|null {
+    public getAppTitle(context: AppTitleContext): string | null {
         return null;
     }
 }
