@@ -13,10 +13,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import { ProvideBrandingExtensions } from "../lifecycles/BrandingExtensions";
 import { ProvideCryptoSetupExtensions } from "../lifecycles/CryptoSetupExtensions";
 import { ProvideExperimentalExtensions } from "../lifecycles/ExperimentalExtensions";
 
 export type AllExtensions = {
+    branding?: ProvideBrandingExtensions;
     cryptoSetup?: ProvideCryptoSetupExtensions;
     experimental?: ProvideExperimentalExtensions;
 };
