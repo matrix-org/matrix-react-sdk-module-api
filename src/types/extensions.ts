@@ -1,5 +1,7 @@
 /*
 Copyright 2023 Verji Tech AS
+Copyright 2025 New Vector Ltd.
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -14,6 +16,7 @@ limitations under the License.
 */
 
 import { ProvideBrandingExtensions } from "../lifecycles/BrandingExtensions";
+import { ProvideConferenceExtensions } from "../lifecycles/ConferenceExtensions";
 import { ProvideCryptoSetupExtensions } from "../lifecycles/CryptoSetupExtensions";
 import { ProvideExperimentalExtensions } from "../lifecycles/ExperimentalExtensions";
 
@@ -21,4 +24,5 @@ export type AllExtensions = {
     branding?: ProvideBrandingExtensions;
     cryptoSetup?: ProvideCryptoSetupExtensions;
     experimental?: ProvideExperimentalExtensions;
+    conference?: ProvideConferenceExtensions;
 };
