@@ -1,3 +1,10 @@
+# Deprecation 🚨
+
+Since the closing of the matrix-react-sdk by folding it into element-web this Module API is being deprecated.
+It will not be removed without at least a majority replacement.
+The replacement works have begun at https://github.com/element-hq/element-modules/tree/main/packages/element-web-module-api
+which also offers improved ways to load legacy modules & customisations via a thin wrapped using *temporary* transition APIs.
+
 # matrix-react-sdk-module-api
 
 API surface for interacting with the [matrix-react-sdk](https://github.com/matrix-org/matrix-react-sdk) in a safe
