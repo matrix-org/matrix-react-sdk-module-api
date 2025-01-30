@@ -1,5 +1,4 @@
 /*
-Copyright 2022 The Matrix.org Foundation C.I.C.
 Copyright 2025 New Vector Ltd.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,9 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { RoomViewLifecycle } from "./RoomViewLifecycle";
-import { WidgetLifecycle } from "./WidgetLifecycle";
-import { WrapperLifecycle } from "./WrapperLifecycle";
-import { ClientLifecycle } from "./ClientLifecycle";
-
-export type AnyLifecycle = RoomViewLifecycle | WidgetLifecycle | WrapperLifecycle | ClientLifecycle;
+/**
+ * Client lifecycle events
+ */
+export enum ClientLifecycle {
+    /**
+     * An event to notify when the client has completed it's first sync.
+     */
+    FirstSync = "first_sync",
+}
